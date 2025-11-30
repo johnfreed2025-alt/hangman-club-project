@@ -173,10 +173,7 @@ def test_from_dict_rejects_empty_word():
                 Game.from_dict(data)
 
 def test_from_dict_invalid_guessed_letters():
-    """Check that an error is raised if invalid values are entered.
-
-    This docstring has been wrapped to avoid an E501 "line too long" error.
-    """
+    """Check that an error is raised if invalid values are entered."""
     data = {
         "word": "python",
         "guessed_letters": [1, 2, 3],
