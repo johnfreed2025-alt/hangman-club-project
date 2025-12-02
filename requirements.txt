@@ -1,4 +1,4 @@
-# Core (run time only) dependencies for Hangman Project
+# Core (run time) dependencies for Hangman Project
 
 # Web framework
 flask==3.1.2

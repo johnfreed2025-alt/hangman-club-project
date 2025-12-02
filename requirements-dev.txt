@@ -1,12 +1,12 @@
 # Include runtime dependencies
 -r requirements.txt
 
-# These are the development and testing dependencies
+#Test and Development dependencies
 
 # Testing
 pytest==8.4.1
 pytest-xdist==3.6.1
-pytest-cov==4.3.1
+pytest-cov==4.0.0
 codecov==4.5.0
 
 # Linting and formatting
