@@ -1,5 +1,5 @@
 # main program
-from word_selection import choose_word
+#from word_selection import choose_word
 #from game import Game
 #from templates import Template
 
