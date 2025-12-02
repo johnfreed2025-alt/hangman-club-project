@@ -13,7 +13,7 @@ from word_selection import choose_word
 # An object of class Game shall be retrieved to do this
 
 def new_game ():
-    word = choose_word()
+    #word = choose_word()
     # This shall call on the word_selection class to get a word
     #  and pass this into the game Class constructor
     # The output shall be returned to the user as an HTTP/HTTPS 
@@ -84,7 +84,7 @@ def admin ():
 def send_registration():
     return None
 
-new_game()
+
 
 
 

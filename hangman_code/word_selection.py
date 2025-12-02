@@ -15,8 +15,6 @@ def parse_words(words_file):
                 print(lines)
 
 def choose_word():
-        chosen_word = parse_words()
-        print("something")
         return None
 
 def sanitize_word(word):
