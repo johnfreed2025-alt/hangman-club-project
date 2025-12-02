@@ -1,59 +1,62 @@
-"User playing hangman in their browser"
-"Relationship to routes_py => Sends HTTP requests to, HTTP/HTTPS"
-"Relationship from routes_py - recieves feedback for the user and displays it"
+# User playing hangman in their browser"
+# Relationship to routes_py => Sends HTTP requests to, HTTP/HTTPS"
+# Relationship from routes_py - recieves feedback for the user and displays it"
 
 from flask import Flask, redirect, url_for, request, render_template
 import hangman_code.main
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route("/")
 def home():
-    return render_template('alphabet.html')
+    return render_template("alphabet.html")
 
-@app.route('/success/<name>')
+
+@app.route("/success/<name>")
 def success(name):
-    return f'welcome {name}'
+    return f"welcome {name}"
 
-@app.route('/C')
+
+@app.route("/C")
 def C():
-    hangman_code.main.guess('C')
-    return 'some text'
+    hangman_code.main.guess("C")
+    return "some text"
 
-@app.route('/A')
+
+@app.route("/A")
 def A():
-    hangman_code.main.guess('A')
-    return 'some text'
+    hangman_code.main.guess("A")
+    return "some text"
 
 
-
-@app.route('/alphabet', methods=['POST', 'GET'])
+@app.route("/alphabet", methods=["POST", "GET"])
 def login():
-    if request.method == 'POST':
-        user = request.form['nm']
-        return redirect(url_for('C', name='Z'))
+    if request.method == "POST":
+        # user = request.form["nm"]
+        return redirect(url_for("C", name="Z"))
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
 "Relationship to main.py => Sends HTTP requests to, HTTP/HTTPS"
 "Relationship from main.py - recieves feedback "
 "for the user and displays it"
 
-# When the user launches the app, a screen 
+# When the user launches the app, a screen
 # loads which asks whether the user
-#-wants to start a new game or to resume the existing game
+# -wants to start a new game or to resume the existing game
+
 
 def start_game():
-# The user clicks to load a new game or resume existing
-# The output is sent to main via the recieve_request
-#  function in convertor.py
+    # The user clicks to load a new game or resume existing
+    # The output is sent to main via the recieve_request
+    #  function in convertor.py
     return None
+
 
 # The user is asked to make a guess
 
+
 def make_aguess():
     return None
-
