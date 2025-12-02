@@ -7,12 +7,15 @@
 
 #from persistence import Persistence
 
-
-
-def parse_words(words_file):
-        with open(words_file, "r") as words_file:
-                lines = words_file.readlines()
-                print(lines)
+class Word_selection():
+  
+    def parse_words(words_file):
+        words_list = []
+        with open(words_file) as f:
+            for x in f:
+                formatted_word = x.strip().lower()
+                words_list.append(formatted_word)
+        return words_list
 
 def choose_word():
         return None
