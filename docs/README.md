@@ -1,11 +1,22 @@
-
 # 🎮 Hangman Game (Python Project)
 
-Main Branch
+## Main Branch
+
+Coverage:  
 [![codecov](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
 
-Dev Branch
+Tests:  
+![Main Branch Test Summary](https://img.shields.io/badge/tests-<!-- TEST_SUMMARY_MAIN -->-blue)
+
+---
+
+## Dev Branch
+
+Coverage:  
 [![Coverage](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
+
+Tests:  
+![Dev Branch Test Summary](https://img.shields.io/badge/tests-<!-- TEST_SUMMARY_DEV -->-blue)
 
 
 

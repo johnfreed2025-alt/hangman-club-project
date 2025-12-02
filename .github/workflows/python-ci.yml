@@ -2,9 +2,13 @@ name: Python CI
 
 on:
   push:
-    branches: []
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: []
+    branches:
+      - main
+      - dev
 
 jobs:
   build:
@@ -52,11 +56,42 @@ jobs:
             PASS=$(jq '.summary.passed' report.json)
             FAIL=$(jq '.summary.failed' report.json)
             TOTAL=$(jq '.summary.total' report.json)
-            echo "Tests passed: $PASS / $TOTAL"
+            PERCENT=$(( PASS * 100 / TOTAL ))
+            echo "Tests passed: $PASS / $TOTAL ($PERCENT%)"
             echo "Tests failed: $FAIL / $TOTAL"
           else
             echo "report.json not found — no test summary available"
           fi
+
+      - name: Update README with branch-specific test badge
+        if: always()
+        run: |
+          if [ -f report.json ]; then
+            PASS=$(jq '.summary.passed' report.json)
+            TOTAL=$(jq '.summary.total' report.json)
+            PERCENT=$(( PASS * 100 / TOTAL ))
+
+            # URL encode the % for Shields.io
+            PERCENT_ENCODED="${PERCENT}%25"
+
+            # Detect current branch
+            BRANCH=${GITHUB_REF##*/}
+
+            if [ "$BRANCH" = "main" ]; then
+              sed -i "s|<!-- TEST_SUMMARY_MAIN -->|$PERCENT_ENCODED|g" README.md
+            elif [ "$BRANCH" = "dev" ]; then
+              sed -i "s|<!-- TEST_SUMMARY_DEV -->|$PERCENT_ENCODED|g" README.md
+            fi
+          fi
+
+      - name: Commit README update
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update test summary [skip ci]" || echo "No changes to commit"
+          git push
 
       - name: Upload coverage to Codecov
         if: always()
