@@ -13,3 +13,6 @@ isort==5.13.2
 
 # (Optional) If your project uses requests or other libraries, add here
 # requests==2.32.3
+
+# User
+flask==3.1.2

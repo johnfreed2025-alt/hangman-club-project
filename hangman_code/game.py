@@ -9,7 +9,7 @@
 
 class Game():
 
-    def _init_(self):
+    def _init_(self, word_selection, ):
         #this is the constructor
         # should could contain the variables needed like word etc
         #self.word etc
