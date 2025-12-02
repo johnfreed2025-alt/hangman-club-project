@@ -43,5 +43,22 @@ jobs:
             --json-report \
             --json-report-file=report.json
         env:
-          PYTEST_ADDOPTS: "_
+          PYTEST_ADDOPTS: "-p no:warnings"
 
+      - name: Print test summary
+        if: always()
+        run: |
+          PASS=$(jq '.summary.passed' report.json)
+          FAIL=$(jq '.summary.failed' report.json)
+          TOTAL=$(jq '.summary.total' report.json)
+          echo "Tests passed: $PASS / $TOTAL"
+          echo "Tests failed: $FAIL / $TOTAL"
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+          verbose: true
+          flags: unittests
