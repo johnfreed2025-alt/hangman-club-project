@@ -1,13 +1,11 @@
 # Include runtime dependencies
 -r requirements.txt
 
-#Test and Development dependencies
-
 # Testing
 pytest==8.4.1
 pytest-xdist==3.6.1
 pytest-cov==4.0.0
-codecov==4.5.0
+codecov==2.1.13
 
 # Linting and formatting
 flake8==7.1.1
