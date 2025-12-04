@@ -13,6 +13,7 @@
 # An object of class Game shall be retrieved to do this
 
 def new_game ():
+    print ('hello')
     # This shall call on the word_selection class to get a word
     #  and pass this into the game Class constructor
     # The output shall be returned to the user as an HTTP/HTTPS 
@@ -41,11 +42,12 @@ attempts_remaining = 10
 def play_game():
     return None
         # user makes a guess
-def guess (letter):
+def guess (letter, word):
     # guess calling on make_guess from game, get_render from 
     # templates and then send_request from convertor
-    print (letter)
-    return None
+    if letter in word:
+        print ('correct')
+    return 'Template'
         # calculate result
     # Work out if game is won using Game.is_itwon
         # If not store information using Game.to_dict:
