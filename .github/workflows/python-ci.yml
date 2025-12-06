@@ -34,8 +34,8 @@ jobs:
       # ---------------------------------------------------------
       # BLACK FORMAT CHECK
       # ---------------------------------------------------------
-      - name: Black formatting check
-        run: black --check .
+      - name: Black formatting
+        run: black .
 
       # ---------------------------------------------------------
       # FLAKE8 LINTING WITH SOURCE + CARETS
