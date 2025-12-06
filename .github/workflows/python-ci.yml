@@ -1,10 +1,10 @@
-name: CI
+name: Python CI
 
 on:
   push:
-    branches: []
+    branches: [main, dev]
   pull_request:
-    branches: []
+    branches: [main, dev]
 
 jobs:
   tests:
@@ -34,80 +34,59 @@ jobs:
       # ---------------------------------------------------------
       # BLACK FORMAT CHECK
       # ---------------------------------------------------------
-      - name: Black formatting
-        run: black .
+      - name: Black formatting check
+        run: black --check .
 
       # ---------------------------------------------------------
-      # FLAKE8 LINTING WITH SOURCE + CARETS
+      # FLAKE8 LINTING WITH SOURCE + COLUMN NUMBERS
       # ---------------------------------------------------------
-      - name: Run Flake8
-        run: |
-          flake8 --show-source .
+      - name: Run Flake8 
+        run: flake8 --show-source .
 
       # ---------------------------------------------------------
-      # RUN TESTS WITH COVERAGE + JSON METRICS
+      # RUN TESTS WITH COVERAGE + JSON METRICS (BRANCH-SPECIFIC)
       # ---------------------------------------------------------
       - name: Run tests with coverage + JSON summary
         run: |
+          # Determine branch name safely
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
+
+          # Run pytest
           pytest -n auto \
-            --cov=. --cov-report=xml \
-            --json-report --json-report-file=report.json
+            --cov=. \
+            --cov-report=xml:coverage_${BRANCH}.xml \
+            --json-report --json-report-file=report_${BRANCH}.json
 
       # ---------------------------------------------------------
-      # ALWAYS GENERATE METRICS JSON (EVEN IF TESTS FAIL)
+      # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
       # ---------------------------------------------------------
-      - name: Generate summary JSON
+      - name: Generate Shields.io JSON summary
         if: always()
         run: |
           mkdir -p metrics
 
-          if [ -f report.json ]; then
-            PASS=$(jq '.summary.passed' report.json)
-            TOTAL=$(jq '.summary.total' report.json)
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
 
-            if [ "$TOTAL" -gt 0 ]; then
-              PERCENT=$(( PASS * 100 / TOTAL ))
-            else
-              PERCENT=0
-            fi
+          if [ -f report_${BRANCH}.json ]; then
+                  PASS=$(jq -r '.summary.passed' report_${BRANCH}.json | xargs)
+                  TOTAL=$(jq -r '.summary.total' report_${BRANCH}.json | xargs)
+
+                  if [ "$TOTAL" -gt 0 ]; then
+                          PERCENT=$(( PASS * 100 / TOTAL ))
+                  else
+                          PERCENT=0
+                  fi
           else
-            PASS=0
-            TOTAL=0
-            PERCENT=0
+                  PASS=0
+                  TOTAL=0
+                  PERCENT=0
           fi
-
-          BRANCH="${GITHUB_REF##*/}"
 
           if [ "$BRANCH" = "main" ]; then
-            OUTFILE="metrics/test_summary_main.json"
+                  OUTFILE="metrics/test_summary_main.json"
           else
-            OUTFILE="metrics/test_summary_dev.json"
+                  OUTFILE="metrics/test_summary_dev.json"
           fi
 
-          cat <<EOF > $OUTFILE
-          {
-            "tests": {
-              "passed": $PASS,
-              "total": $TOTAL,
-              "percent": $PERCENT
-            }
-          }
-          EOF
+          if [ "$PERCENT" -ge 80 ]; then
 
-      # ---------------------------------------------------------
-      # PUBLISH METRICS TO GITHUB PAGES (ON PUSH ONLY)
-      # ---------------------------------------------------------
-      - name: Upload metrics to GitHub Pages
-        if: github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./metrics
-          destination_dir: .
-
-      # ---------------------------------------------------------
-      # FAIL CI IF TESTS FAILED
-      # ---------------------------------------------------------
-      - name: Fail if tests failed
-        if: ${{ failure() }}
-        run: exit 1
