@@ -40,9 +40,9 @@ jobs:
       # ---------------------------------------------------------
       # FLAKE8 LINTING WITH SOURCE + CARETS
       # ---------------------------------------------------------
-      - name: Run Flake8 with source + column numbers
+      - name: Run Flake8
         run: |
-          flake8 --show-source --show-column-numbers .
+          flake8 --show-source .
 
       # ---------------------------------------------------------
       # RUN TESTS WITH COVERAGE + JSON METRICS
