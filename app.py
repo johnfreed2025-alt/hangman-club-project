@@ -1,9 +1,10 @@
-"User playing hangman in their browser"
-"Relationship to routes_py => Sends HTTP requests to, HTTP/HTTPS"
-"Relationship from routes_py - recieves feedback for the user and displays it"
+# User playing hangman in their browser"
+# Relationship to routes_py => Sends HTTP requests to, HTTP/HTTPS"
+# Relationship from routes_py - recieves feedback for the user and displays it"
 
-from flask import Flask, redirect, url_for, request, render_template, session
-from string import ascii_uppercase
+from flask import Flask, request, redirect, url_for, render_template, session
+#from string import ascii_uppercase
+# above was imported but unused
 import hangman_code.main
 from  hangman_code.game import Game
 

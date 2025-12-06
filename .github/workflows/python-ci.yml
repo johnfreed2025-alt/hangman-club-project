@@ -2,48 +2,122 @@ name: Python CI
 
 on:
   push:
-    branches: [ master, dev]
+    branches: []
   pull_request:
-    branches: [ master, dev]
+    branches: []
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.11]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # ---------------------------------------------------------
+      # CHECKOUT & PYTHON SETUP
+      # ---------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      # ---------------------------------------------------------
+      # INSTALL DEPENDENCIES
+      # ---------------------------------------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
-    - name: Run Black check
-      run: black .
+      # ---------------------------------------------------------
+      # BLACK FORMAT
+      # ---------------------------------------------------------
+      - name: Run Black
+        run: black .
 
-    - name: Lint with flake8
-      run: flake8 .
+      # ---------------------------------------------------------
+      # FLAKE8 LINTING WITH SOURCE
+      # ---------------------------------------------------------
+      - name: Run Flake8 with source
+        run: flake8 --show-source .
 
-    - name: Run tests with pytest and generate coverage
-      run: |
-        pytest -n auto --cov=. --cov-report=xml:coverage.xml --cov-report=term --cov-fail-under=0
-      env:
-        PYTEST_ADDOPTS: "-p no:warnings"
+      # ---------------------------------------------------------
+      # RUN TESTS WITH COVERAGE + JSON METRICS (BRANCH-SPECIFIC)
+      # ---------------------------------------------------------
+      - name: Run tests with coverage + JSON summary
+        run: |
+          pytest -n auto \
+          --cov=. \
+          --cov-report=xml:coverage.xml \
+          --json-report --json-report-file=report.json
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        files: coverage.xml
-        fail_ci_if_error: false
-        verbose: true
-        flags: unittests
 
+      # ---------------------------------------------------------
+      # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
+      # ---------------------------------------------------------
+      - name: Generate Shields.io JSON summary
+        if: always()
+        run: |
+          mkdir -p metrics
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
+
+          if [ -f report_${BRANCH}.json ]; then
+              PASS=$(jq -r '.summary.passed' report_${BRANCH}.json | tr -d "[:space:]")
+              TOTAL=$(jq -r '.summary.total' report_${BRANCH}.json | tr -d "[:space:]")
+              if [ "$TOTAL" -gt 0 ]; then
+                  PERCENT=$(( PASS * 100 / TOTAL ))
+              else
+                  PERCENT=0
+              fi
+          else
+              PERCENT=0
+          fi
+
+          if [ "$PERCENT" -ge 80 ]; then
+              COLOR="green"
+          elif [ "$PERCENT" -ge 50 ]; then
+              COLOR="yellow"
+          else
+              COLOR="red"
+          fi
+
+          OUTFILE="metrics/test_summary_${BRANCH}.json"
+
+          echo "{
+          \"schemaVersion\": 1,
+          \"label\": \"tests\",
+          \"message\": \"${PERCENT}%\",
+          \"color\": \"${COLOR}\"
+          }" > "$OUTFILE"
+
+
+      # ---------------------------------------------------------
+      # UPLOAD COVERAGE TO CODECOV (BRANCH-SAFE)
+      # ---------------------------------------------------------
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          fail_ci_if_error: true
+          verbose: true
+
+
+      # ---------------------------------------------------------
+      # PUBLISH METRICS TO GITHUB PAGES
+      # ---------------------------------------------------------
+      - name: Upload metrics to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./metrics
+          destination_dir: .
+
+      # ---------------------------------------------------------
+      # FAIL CI IF TESTS FAILED
+      # ---------------------------------------------------------
+      - name: Fail if tests failed
+        if: ${{ failure() }}
+        run: exit 1

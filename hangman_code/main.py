@@ -1,5 +1,5 @@
 # main program
-#from word_selection import Word_selection
+#from word_selection import choose_word
 #from game import Game
 #from templates import Template
 
@@ -13,7 +13,7 @@
 # An object of class Game shall be retrieved to do this
 
 def new_game ():
-    print ('hello')
+    #word = choose_word()
     # This shall call on the word_selection class to get a word
     #  and pass this into the game Class constructor
     # The output shall be returned to the user as an HTTP/HTTPS 

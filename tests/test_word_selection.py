@@ -1,7 +1,7 @@
 #This is a test to test the word_selection function
 import pytest
 from re import fullmatch
-from hangman_code.word_selection import word_selection
+import hangman_code.word_selection as word_selection
 
 def test_input_error():
     """Check that an error is raised if words.txt does not exist."""

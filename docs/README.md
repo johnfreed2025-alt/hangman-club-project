@@ -1,7 +1,22 @@
-
 # 🎮 Hangman Game (Python Project)
 
+## Main Branch
+
+Coverage:  
 [![codecov](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
+Test Pass Rate: 
+![Main Tests](https://img.shields.io/endpoint?url=https://lockleaze-community-coding-club.github.io/hangman-club-project/test_summary_main.json)
+
+
+---
+
+## Dev Branch
+
+Coverage:  
+[![Coverage](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
+Test Pass Rate: 
+![Dev Tests](https://img.shields.io/endpoint?url=https://lockleaze-community-coding-club.github.io/hangman-club-project/test_summary_dev.json)
+
 
 
 Welcome to the **Hangman** game project! This beginner-friendly Python game is designed for learning, collaboration, and fun.
