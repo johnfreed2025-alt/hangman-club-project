@@ -34,6 +34,18 @@ jobs:
           pip install -r requirements-dev.txt
 
       # ---------------------------------------------------------
+      # DEBUG INSTALLED PACKAGES
+      # ---------------------------------------------------------
+      - name: Debug installed packages
+        run: |
+          echo "Python version:"
+          python --version
+          echo "Pip version:"
+          pip --version
+          echo "Installed packages:"
+          pip list
+
+      # ---------------------------------------------------------
       # BLACK FORMAT
       # ---------------------------------------------------------
       - name: Run Black
@@ -50,11 +62,13 @@ jobs:
       # ---------------------------------------------------------
       - name: Run tests with coverage + JSON summary
         run: |
+          set -e
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
           pytest -n auto \
             --cov=. \
-            --cov-report=xml:coverage.xml \
+            --cov-report=xml:coverage_${BRANCH}.xml \
             --json-report --json-report-file=report_${BRANCH}.json
+
 
       # ---------------------------------------------------------
       # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
@@ -103,7 +117,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: coverage.xml
+          files: coverage_*.xml
           fail_ci_if_error: true
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
