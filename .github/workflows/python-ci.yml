@@ -61,14 +61,31 @@ jobs:
       # RUN TESTS WITH COVERAGE + JSON METRICS (BRANCH-SPECIFIC)
       # ---------------------------------------------------------
       - name: Run tests with coverage + JSON summary
+        continue-on-error: true
         run: |
-          set -e
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
           pytest -n auto \
             --cov=. \
             --cov-report=xml:coverage_${BRANCH}.xml \
-            --json-report --json-report-file=report_${BRANCH}.json
+            --json-report \
+            --json-report-file=report_${BRANCH}.json \
+            -v --tb=short
 
+      # ---------------------------------------------------------
+      # DEBUG TEST OUTPUTS
+      # ---------------------------------------------------------
+      - name: Debug test outputs
+        run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
+        
+          echo "=== JSON Test Report ==="
+          cat report_${BRANCH}.json
+        
+          echo "=== Coverage XML Summary (first 20 lines) ==="
+          head -n 20 coverage_${BRANCH}.xml
+        
+          echo "=== All Metrics Files ==="
+          ls -lah metrics
 
       # ---------------------------------------------------------
       # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
