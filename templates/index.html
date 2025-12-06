@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html>
   <body>
+
+    <form action="{{ url_for('reset') }}" method="post">
+        <button type="submit" id="reset">RESET</button>
+    </form>
     
+
+    <p>
+    <p id="message">Name</p>
     <p id="game_name">{{ game_name }}</p>
+
+
 
     {% if game_status == 0 %}
       <form action="{{ url_for('name_game') }}" method="post">
@@ -26,10 +35,6 @@
     <p id="template">{{ template }}</p>
     <p id="lineLength">{{ lineLength }}</p>
     <p id="game_status">{{ game_status }}</p>
-
-    {% for letter in used_letters %}
-      <p id="used_letter">{{ letter }}</p>
-    {% endfor %}
 
     <!-- One form/button per letter -->
     {% for letter in accepted_letters %}

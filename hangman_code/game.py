@@ -30,7 +30,7 @@ class Game:
 
     ):
         self.game_id = game_id              # always 1 for now
-        self.game_name = game_name
+        self.__game_name = game_name
         self.score = score                  # remaining attempts
         self.word = word
         self.message = message
@@ -70,13 +70,18 @@ class Game:
         self.game_status = game_status
         return
 
+    def get_game_name(self):
+        return self.__game_name 
+    
+    def set_game_name(self, game_name):
+        self.__game_name = game_name
     # ---------- helpers for session storage ----------
 
     def to_dict(self):
         """Serialize the game to plain types (for session / JSON)."""
         return {
             "game_id": self.game_id,
-            "game_name": self.game_name,
+            "game_name": self.get_game_name(),
             "score": self.score,
             "word": self.word,
             "template": self.template,
