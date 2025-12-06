@@ -106,6 +106,8 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: true
           verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
 
       # ---------------------------------------------------------
       # PUBLISH METRICS TO GITHUB PAGES
