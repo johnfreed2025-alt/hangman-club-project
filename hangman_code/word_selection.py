@@ -17,19 +17,16 @@ class Word_selection():
                 words_list.append(formatted_word)
         return words_list
 
-    def choose_word():
-        return None
-    
-    #def load_words():
-        #return "none"
-    
-    def sanitize_word(word):
-        return None
-    
-    def filter_words(words, min_length=4, max_length=10):
+def choose_word():
         return None
 
-    def get_random_word():
+def sanitize_word(word):
+        return None
+
+def filter_words(words, min_length=4, max_length=10):
+        return None
+
+def get_random_word():
         return None 
  
  

@@ -1,3 +1,6 @@
+from enum import Enum
+from re import sub
+
 "Purpose: Core game rules and state management"
 "Implements hangman rules and game state management"
 "Relationships to main.py - recieves the selected word "
@@ -8,9 +11,6 @@
 
 # game needs a game_id, a new one should be generated if one does not exist
 #
-
-from enum import Enum
-from re import sub
 
 class Game():
 
