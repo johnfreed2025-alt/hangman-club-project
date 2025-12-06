@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>Enter Name:</p>
+
+    <form action="{{ url_for('new_game') }}" method="post">
+        <button type="submit" id="new_game">NEW GAME</button>
+    </form>
+
+    <p id="message">{{ message }}</p>
+    <p id="template">{{ template }}</p>
+
+    <!-- Your name input if needed -->
+    <p><input type="text" name="nm" /></p>
+
+
+
+    <!-- One form/button per letter -->
+    {% for letter in letters %}
+      <form action="{{ url_for('guess') }}" method="post" style="display:inline;">
+        <button
+          type="submit"
+          name="letter"
+          value="{{ letter }}"
+          id="btn{{ letter }}"
+          {% if letter in disabled_letters %}disabled{% endif %}
+        >
+          {{ letter }}
+        </button>
+      </form>
+    {% endfor %}
+
+    
+  </body>
+</html>
