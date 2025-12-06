@@ -2,9 +2,11 @@ name: Python CI
 
 on:
   push:
-    branches: []
+    branches:
+      - '**'
   pull_request:
-    branches: []
+    branches:
+      - '**'
 
 jobs:
   tests:
@@ -48,11 +50,11 @@ jobs:
       # ---------------------------------------------------------
       - name: Run tests with coverage + JSON summary
         run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
           pytest -n auto \
-          --cov=. \
-          --cov-report=xml:coverage.xml \
-          --json-report --json-report-file=report.json
-
+            --cov=. \
+            --cov-report=xml:coverage.xml \
+            --json-report --json-report-file=report_${BRANCH}.json
 
       # ---------------------------------------------------------
       # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
@@ -85,13 +87,15 @@ jobs:
 
           OUTFILE="metrics/test_summary_${BRANCH}.json"
 
-          echo "{
-          \"schemaVersion\": 1,
-          \"label\": \"tests\",
-          \"message\": \"${PERCENT}%\",
-          \"color\": \"${COLOR}\"
-          }" > "$OUTFILE"
-
+          # Use EOF with tabs to avoid YAML indentation issues
+          cat <<-EOF > "$OUTFILE"
+          {
+            "schemaVersion": 1,
+            "label": "tests",
+            "message": "${PERCENT}%",
+            "color": "${COLOR}"
+          }
+          EOF
 
       # ---------------------------------------------------------
       # UPLOAD COVERAGE TO CODECOV (BRANCH-SAFE)
@@ -102,7 +106,6 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: true
           verbose: true
-
 
       # ---------------------------------------------------------
       # PUBLISH METRICS TO GITHUB PAGES
@@ -121,3 +124,4 @@ jobs:
       - name: Fail if tests failed
         if: ${{ failure() }}
         run: exit 1
+
