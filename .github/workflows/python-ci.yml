@@ -1,4 +1,4 @@
-name: CI
+name: Python CI
 
 on:
   push:
@@ -32,70 +32,80 @@ jobs:
           pip install -r requirements-dev.txt
 
       # ---------------------------------------------------------
-      # BLACK FORMAT CHECK
+      # BLACK FORMAT
       # ---------------------------------------------------------
-      - name: Black formatting
+      - name: Run Black
         run: black .
 
       # ---------------------------------------------------------
-      # FLAKE8 LINTING WITH SOURCE + CARETS
+      # FLAKE8 LINTING WITH SOURCE
       # ---------------------------------------------------------
-      - name: Run Flake8
-        run: |
-          flake8 --show-source .
+      - name: Run Flake8 with source
+        run: flake8 --show-source .
 
       # ---------------------------------------------------------
-      # RUN TESTS WITH COVERAGE + JSON METRICS
+      # RUN TESTS WITH COVERAGE + JSON METRICS (BRANCH-SPECIFIC)
       # ---------------------------------------------------------
       - name: Run tests with coverage + JSON summary
         run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
+
           pytest -n auto \
-            --cov=. --cov-report=xml \
-            --json-report --json-report-file=report.json
+            --cov=. \
+            --cov-report=xml:coverage_${BRANCH}.xml \
+            --json-report --json-report-file=report_${BRANCH}.json
 
       # ---------------------------------------------------------
-      # ALWAYS GENERATE METRICS JSON (EVEN IF TESTS FAIL)
+      # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
       # ---------------------------------------------------------
-      - name: Generate summary JSON
+      - name: Generate Shields.io JSON summary
         if: always()
         run: |
           mkdir -p metrics
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
 
-          if [ -f report.json ]; then
-            PASS=$(jq '.summary.passed' report.json)
-            TOTAL=$(jq '.summary.total' report.json)
-
-            if [ "$TOTAL" -gt 0 ]; then
-              PERCENT=$(( PASS * 100 / TOTAL ))
-            else
+          if [ -f report_${BRANCH}.json ]; then
+              PASS=$(jq -r '.summary.passed' report_${BRANCH}.json | tr -d "[:space:]")
+              TOTAL=$(jq -r '.summary.total' report_${BRANCH}.json | tr -d "[:space:]")
+              if [ "$TOTAL" -gt 0 ]; then
+                  PERCENT=$(( PASS * 100 / TOTAL ))
+              else
+                  PERCENT=0
+              fi
+          else
               PERCENT=0
-            fi
-          else
-            PASS=0
-            TOTAL=0
-            PERCENT=0
           fi
 
-          BRANCH="${GITHUB_REF##*/}"
-
-          if [ "$BRANCH" = "main" ]; then
-            OUTFILE="metrics/test_summary_main.json"
+          if [ "$PERCENT" -ge 80 ]; then
+              COLOR="green"
+          elif [ "$PERCENT" -ge 50 ]; then
+              COLOR="yellow"
           else
-            OUTFILE="metrics/test_summary_dev.json"
+              COLOR="red"
           fi
 
-          cat <<EOF > $OUTFILE
-          {
-            "tests": {
-              "passed": $PASS,
-              "total": $TOTAL,
-              "percent": $PERCENT
-            }
-          }
-          EOF
+          OUTFILE="metrics/test_summary_${BRANCH}.json"
+
+          echo "{
+          \"schemaVersion\": 1,
+          \"label\": \"tests\",
+          \"message\": \"${PERCENT}%\",
+          \"color\": \"${COLOR}\"
+          }" > "$OUTFILE"
+
 
       # ---------------------------------------------------------
-      # PUBLISH METRICS TO GITHUB PAGES (ON PUSH ONLY)
+      # UPLOAD COVERAGE TO CODECOV (BRANCH-SAFE)
+      # ---------------------------------------------------------
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage_${{ github.head_ref || github.ref_name }}.xml
+          fail_ci_if_error: true
+          verbose: true
+
+      # ---------------------------------------------------------
+      # PUBLISH METRICS TO GITHUB PAGES
       # ---------------------------------------------------------
       - name: Upload metrics to GitHub Pages
         if: github.event_name == 'push'
