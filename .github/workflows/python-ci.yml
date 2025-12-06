@@ -1,104 +1,113 @@
-name: Python CI
+name: CI
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: []
   pull_request:
-    branches:
-      - main
-      - dev
+    branches: []
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.11]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # ---------------------------------------------------------
+      # CHECKOUT & PYTHON SETUP
+      # ---------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.11'
 
+      # ---------------------------------------------------------
+      # INSTALL DEPENDENCIES
+      # ---------------------------------------------------------
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
-      - name: Run Black check
-        run: black .
+      # ---------------------------------------------------------
+      # BLACK FORMAT CHECK
+      # ---------------------------------------------------------
+      - name: Black formatting check
+        run: black --check .
 
-      - name: Lint with flake8
-        run: flake8 .
+      # ---------------------------------------------------------
+      # FLAKE8 LINTING WITH SOURCE + CARETS
+      # ---------------------------------------------------------
+      - name: Run Flake8 with source + column numbers
+        run: |
+          flake8 --show-source --show-column-numbers .
 
-      - name: Run tests with pytest and generate coverage
+      # ---------------------------------------------------------
+      # RUN TESTS WITH COVERAGE + JSON METRICS
+      # ---------------------------------------------------------
+      - name: Run tests with coverage + JSON summary
         run: |
           pytest -n auto \
-            --cov=. \
-            --cov-report=xml:coverage.xml \
-            --cov-report=term \
-            --cov-fail-under=0 \
-            --json-report \
-            --json-report-file=report.json
-        env:
-          PYTEST_ADDOPTS: "-p no:warnings"
+            --cov=. --cov-report=xml \
+            --json-report --json-report-file=report.json
 
-      - name: Print test summary
+      # ---------------------------------------------------------
+      # ALWAYS GENERATE METRICS JSON (EVEN IF TESTS FAIL)
+      # ---------------------------------------------------------
+      - name: Generate summary JSON
         if: always()
         run: |
+          mkdir -p metrics
+
           if [ -f report.json ]; then
             PASS=$(jq '.summary.passed' report.json)
-            FAIL=$(jq '.summary.failed' report.json)
             TOTAL=$(jq '.summary.total' report.json)
-            PERCENT=$(( PASS * 100 / TOTAL ))
-            echo "Tests passed: $PASS / $TOTAL ($PERCENT%)"
-            echo "Tests failed: $FAIL / $TOTAL"
-          else
-            echo "report.json not found — no test summary available"
-          fi
 
-      - name: Update README with branch-specific test badge
-        if: always()
-        run: |
-          if [ -f ./hangman-club-project/docs/README.md ]; then
-            PASS=$(jq '.summary.passed' report.json)
-            TOTAL=$(jq '.summary.total' report.json)
-            PERCENT=$(( PASS * 100 / TOTAL ))
-            PERCENT_ENCODED="${PERCENT}%25"
-
-            BRANCH=${GITHUB_REF##*/}
-
-            if [ "$BRANCH" = "main" ]; then
-                sed -i "s|<!-- TEST_SUMMARY_MAIN -->|$PERCENT_ENCODED|g" ./hangman-club-project/docs/README.md
-                git add ./hangman-club-project/docs/README.md
-            elif [ "$BRANCH" = "dev" ]; then
-                sed -i "s|<!-- TEST_SUMMARY_DEV -->|$PERCENT_ENCODED|g" ./hangman-club-project/docs/README.md
-                git add ./hangman-club-project/docs/README.md
+            if [ "$TOTAL" -gt 0 ]; then
+              PERCENT=$(( PASS * 100 / TOTAL ))
+            else
+              PERCENT=0
             fi
           else
-            echo "README.md not found at ./hangman-club-project/docs/README.md, skipping update"
+            PASS=0
+            TOTAL=0
+            PERCENT=0
           fi
 
-      - name: Commit README update
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "Update test summary [skip ci]" || echo "No changes to commit"
-          git push
+          BRANCH="${GITHUB_REF##*/}"
 
-      - name: Upload coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@v5
+          if [ "$BRANCH" = "main" ]; then
+            OUTFILE="metrics/test_summary_main.json"
+          else
+            OUTFILE="metrics/test_summary_dev.json"
+          fi
+
+          cat <<EOF > $OUTFILE
+          {
+            "tests": {
+              "passed": $PASS,
+              "total": $TOTAL,
+              "percent": $PERCENT
+            }
+          }
+          EOF
+
+      # ---------------------------------------------------------
+      # PUBLISH METRICS TO GITHUB PAGES (ON PUSH ONLY)
+      # ---------------------------------------------------------
+      - name: Upload metrics to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          files: coverage.xml
-          fail_ci_if_error: false
-          verbose: true
-          flags: unittests
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./metrics
+          destination_dir: .
 
+      # ---------------------------------------------------------
+      # FAIL CI IF TESTS FAILED
+      # ---------------------------------------------------------
+      - name: Fail if tests failed
+        if: ${{ failure() }}
+        run: exit 1

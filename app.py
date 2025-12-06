@@ -2,8 +2,9 @@
 # Relationship to routes_py => Sends HTTP requests to, HTTP/HTTPS"
 # Relationship from routes_py - recieves feedback for the user and displays it"
 
-from flask import Flask, redirect, url_for, request, render_template, session
-from string import ascii_uppercase
+from flask import Flask, request, redirect, url_for, render_template, session
+#from string import ascii_uppercase
+# above was imported but unused
 import hangman_code.main
 from  hangman_code.game import Game
 
@@ -12,8 +13,6 @@ app.secret_key = "super-secret-key-change-this"
 
 @app.route("/", methods=["GET"])
 def index():
-    from flask import render_template, session
-
     message = session.get("message", "")
     word_template = session.get("template", "")
     disabled_letters = session.get("disabled_letters", [])
@@ -35,8 +34,6 @@ def index():
 
 @app.route("/guess", methods=["POST"])
 def guess():
-    from flask import request, session, redirect, url_for
-
     # Get the letter from the form
     letter = request.form.get("letter")
     if not letter:
