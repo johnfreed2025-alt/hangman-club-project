@@ -5,14 +5,14 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 #from string import ascii_uppercase
 # above was imported but unused
-import hangman_code.main
+#import hangman_code.main
 from  hangman_code.game import Game
 
 app = Flask(__name__)
 app.secret_key = "super-secret-key-change-this"
 
 
-## This runs every time one of the other routes is called 
+# This runs every time one of the other routes is called 
 @app.route("/", methods=["GET"])
 def index():
     game_data = session.get("game")
@@ -105,7 +105,7 @@ def guess():
     '''
     if letter.upper() in current_game.word.upper():
         print ('in word')
-    else: 
+    else:
         print ('not in word ', current_game.word)
         current_game.message = 'TRY AGAIN!'
     '''
