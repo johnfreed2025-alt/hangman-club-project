@@ -1,6 +1,3 @@
-from enum import Enum
-from re import sub
-
 "Defines the class Game that holds details of the game and provides game specific functions"
 
 # game needs a game_id, a new one should be generated if one does not exist
