@@ -100,9 +100,10 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: coverage_${{ github.head_ref || github.ref_name }}.xml
+          files: coverage_*.xml
           fail_ci_if_error: true
           verbose: true
+
 
       # ---------------------------------------------------------
       # PUBLISH METRICS TO GITHUB PAGES
