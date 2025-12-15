@@ -46,7 +46,7 @@ def global_dictionary_update():
         # Update dictionary with cumulative score from last game
         update_data("cumulative score", cumulative_score, data)
         # Update dictionary with number of games played in total
-        update_data("number_games_played", number_of_games_played data)
+        update_data("number_games_played", number_of_games_played, data)
         # Update dictionary with number of games won in total
         update_data("number_games_won", number_of_games_won, data)
         # Update dictionary with index of current game
