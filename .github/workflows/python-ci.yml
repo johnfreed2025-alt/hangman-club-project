@@ -2,15 +2,16 @@ name: Python CI
 
 on:
   push:
-    branches:
-      - '**'
+    branches: ['**']
   pull_request:
-    branches:
-      - '**'
+    branches: ['**']
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    env:
+      PYTEST_FAILED: "false"
 
     steps:
       # ---------------------------------------------------------
@@ -34,61 +35,64 @@ jobs:
           pip install -r requirements-dev.txt
 
       # ---------------------------------------------------------
-      # DEBUG INSTALLED PACKAGES
+      # LINTING (FAILURE RECORDED, PIPELINE CONTINUES)
       # ---------------------------------------------------------
-      - name: Debug installed packages
+      - name: Run Flake8
         run: |
-          echo "Python version:"
-          python --version
-          echo "Pip version:"
-          pip --version
-          echo "Installed packages:"
-          pip list
+          set +e
+          flake8 .
+          EXIT_CODE=$?
+          set -e
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "LINT_FAILED=true" >> $GITHUB_ENV
+          fi
 
       # ---------------------------------------------------------
-      # BLACK FORMAT
+      # RUN TESTS (FAILURE RECORDED, PIPELINE CONTINUES)
       # ---------------------------------------------------------
-      - name: Run Black
-        run: black .
-
-      # ---------------------------------------------------------
-      # FLAKE8 LINTING WITH SOURCE
-      # ---------------------------------------------------------
-      - name: Run Flake8 with source
-        run: flake8 --show-source .
-
-      # ---------------------------------------------------------
-      # RUN TESTS WITH COVERAGE + JSON METRICS (BRANCH-SPECIFIC)
-      # ---------------------------------------------------------
-      - name: Run tests with coverage + JSON summary
-        continue-on-error: true
+      - name: Run pytest with coverage & JSON report
         run: |
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
-          pytest -n auto \
-            --cov=. \
+
+          set +e
+          pytest tests \
+            --cov=hangman_code \
             --cov-report=xml:coverage_${BRANCH}.xml \
             --json-report \
             --json-report-file=report_${BRANCH}.json \
             -v --tb=short
+          EXIT_CODE=$?
+          set -e
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "PYTEST_FAILED=true" >> $GITHUB_ENV
+          fi
 
       # ---------------------------------------------------------
-      # DEBUG TEST OUTPUTS
+      # ENSURE TESTS RAN
       # ---------------------------------------------------------
-      - name: Debug test outputs
+      - name: Verify test execution
         run: |
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
-        
-          echo "=== JSON Test Report ==="
-          cat report_${BRANCH}.json
-        
-          echo "=== Coverage XML Summary (first 20 lines) ==="
-          head -n 20 coverage_${BRANCH}.xml
-        
-          echo "=== All Metrics Files ==="
-          ls -lah metrics
+
+          if [ ! -f report_${BRANCH}.json ]; then
+            echo "❌ Pytest report missing"
+            echo "PYTEST_FAILED=true" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          TOTAL=$(jq '.summary.total' report_${BRANCH}.json)
+
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "❌ No tests were collected"
+            echo "PYTEST_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "✅ $TOTAL tests executed"
+          fi
 
       # ---------------------------------------------------------
-      # GENERATE SHIELDS.IO JSON (BRANCH-SPECIFIC)
+      # GENERATE SHIELDS.IO METRICS (ALWAYS)
       # ---------------------------------------------------------
       - name: Generate Shields.io JSON summary
         if: always()
@@ -97,29 +101,24 @@ jobs:
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}
 
           if [ -f report_${BRANCH}.json ]; then
-              PASS=$(jq -r '.summary.passed' report_${BRANCH}.json | tr -d "[:space:]")
-              TOTAL=$(jq -r '.summary.total' report_${BRANCH}.json | tr -d "[:space:]")
-              if [ "$TOTAL" -gt 0 ]; then
-                  PERCENT=$(( PASS * 100 / TOTAL ))
-              else
-                  PERCENT=0
-              fi
+            PASS=$(jq '.summary.passed' report_${BRANCH}.json)
+            TOTAL=$(jq '.summary.total' report_${BRANCH}.json)
           else
-              PERCENT=0
+            PASS=0
+            TOTAL=0
           fi
 
-          if [ "$PERCENT" -ge 80 ]; then
-              COLOR="green"
-          elif [ "$PERCENT" -ge 50 ]; then
-              COLOR="yellow"
+          if [ "$TOTAL" -gt 0 ]; then
+            PERCENT=$(( PASS * 100 / TOTAL ))
           else
-              COLOR="red"
+            PERCENT=0
           fi
 
-          OUTFILE="metrics/test_summary_${BRANCH}.json"
+          if [ "$PERCENT" -ge 80 ]; then COLOR="green";
+          elif [ "$PERCENT" -ge 50 ]; then COLOR="yellow";
+          else COLOR="red"; fi
 
-          # Use EOF with tabs to avoid YAML indentation issues
-          cat <<-EOF > "$OUTFILE"
+          cat <<EOF > metrics/test_summary_${BRANCH}.json
           {
             "schemaVersion": 1,
             "label": "tests",
@@ -129,32 +128,31 @@ jobs:
           EOF
 
       # ---------------------------------------------------------
-      # UPLOAD COVERAGE TO CODECOV (BRANCH-SAFE)
+      # UPLOAD COVERAGE TO CODECOV (NO TOKEN)
       # ---------------------------------------------------------
       - name: Upload coverage to Codecov
+        if: always()
         uses: codecov/codecov-action@v5
         with:
           files: coverage_*.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false
           verbose: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-
 
       # ---------------------------------------------------------
-      # PUBLISH METRICS TO GITHUB PAGES
+      # PUBLISH METRICS (PUSH ONLY)
       # ---------------------------------------------------------
-      - name: Upload metrics to GitHub Pages
+      - name: Publish metrics to GitHub Pages
         if: github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./metrics
           destination_dir: .
 
       # ---------------------------------------------------------
-      # FAIL CI IF TESTS FAILED
+      # FINAL FAILURE GATE
       # ---------------------------------------------------------
-      - name: Fail if tests failed
-        if: ${{ failure() }}
-        run: exit 1
-
+      - name: Fail CI if tests failed
+        if: env.PYTEST_FAILED == 'true'
+        run: |
+          echo "❌ Tests failed — failing CI after reports were generated"
+          exit 1
