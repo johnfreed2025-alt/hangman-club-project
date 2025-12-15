@@ -1,7 +1,8 @@
 "Defines the class Game that holds details of the game and provides game specific functions"
 
 # game needs a game_id, a new one should be generated if one does not exist
-#
+# Added using the id() function. This will change with every time the programme
+#is run, so need find a way to assign the id permenantly
 
 from enum import Enum
 from re import sub

@@ -1,5 +1,12 @@
-#import pytest
-#from re import fullmatch
-#from hangman_code.main import main
+import pytest
+from re import fullmatch
+import main
+
+
+
+
+
+
+
 
 
