@@ -10,7 +10,8 @@ from re import sub
 "Uses for game operations (start, guess, win/loss)"
 
 # game needs a game_id, a new one should be generated if one does not exist
-#
+# Added using the id() function. This will change with every time the programme
+#is run, so need find a way to assign the id permenantly
 
 class Game():
 
@@ -27,7 +28,7 @@ class Game():
         self.word = word
         self.template = self.__set_template(word)
         self.game_status = self.Game_status (0)
-        return None
+        self.game_id = id(self)
 
     def __set_template (self, word):
         template = sub('[a-z,A-Z]', '_', word)
@@ -40,8 +41,7 @@ class Game():
         self.game_status = self.Game_status (game_status)
         return 
     
-
-
+    
 #example declare and use class
 #x = Game('Rick','Beaver Dam')
 #print (x._create_template('Dolder')) #test private function cannot be run outside of class
@@ -52,16 +52,12 @@ class Game():
 #print (x.template)
 #x.set_game_status (2)
 #print (x.game_status)
-#
+#print (x.game_ID)
 #x.set_game_status (x.Game_status['WON'])
 #
-#print (x.game_status)
+#print (x.game_id)
 
-#def make_guess(letter, word):
-    # calls on the recieve request function from convertor.py 
-    # to find out the selection from the user
-    # returns the updated Game object to main
-    #return None
+
     
 #def is_itwon():
     # uses the output from make_guess to work out if the game 
