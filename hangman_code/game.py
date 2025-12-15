@@ -1,85 +1,111 @@
-from enum import Enum
-from re import sub
-
-"Purpose: Core game rules and state management"
-"Implements hangman rules and game state management"
-"Relationships to main.py - recieves the selected word "
-"from main and provides feedback on the guess"
-"Relationships to main.py - recieves the selected guess"
-" letter from main and provides feedback on the guess"
-"Uses for game operations (start, guess, win/loss)"
+"Defines the class Game that holds details of the game and provides game specific functions"
 
 # game needs a game_id, a new one should be generated if one does not exist
 # Added using the id() function. This will change with every time the programme
 #is run, so need find a way to assign the id permenantly
 
-class Game():
+from enum import Enum
+from re import sub
 
-    class Game_status (Enum):
-        IN_PLAY = 0
-        WON = 1
-        LOST = 2
+class Game:
 
+    class Game_status(Enum):
+        NEW_GAME = 0
+        IN_PLAY = 1
+        WON = 2
+        LOST = 3
 
-    def __init__(self, player_name, word):
-        
-        self.player_name = player_name
-        self.score = 10 #remaining attempts
+    def __init__(
+        self,
+        game_name='',
+        word='Word 1',
+        *,
+        game_id=1,
+        score=10,
+        template=None,
+        message='game message',
+        used_letters=None,
+        game_started=True,
+        game_status=None,
+        accepted_letters = None
+
+    ):
+        self.game_id = game_id              # always 1 for now
+        self.__game_name = game_name
+        self.score = score                  # remaining attempts
         self.word = word
-        self.template = self.__set_template(word)
-        self.game_status = self.Game_status (0)
-        self.game_id = id(self)
-
-    def __set_template (self, word):
-        template = sub('[a-z,A-Z]', '_', word)
-        return template 
+        self.message = message
+        self.used_letters = used_letters if used_letters is not None else []
+        self.game_started = game_started
+        # if template is not provided, generate it from the word
+        self.template = template if template is not None else self.__set_template(word)
+        self.accepted_letters = (
+                                accepted_letters
+                                if accepted_letters is not None
+                                else [chr(c) for c in range(ord("A"), ord("Z") + 1)]
+                                )
+        # default game status is NEW_GAME
+        #self.game_status = (
+            #game_status if isinstance(game_status, Game.Game_status)
+            #else Game.Game_status.NEW_GAME
+        #)
+        if isinstance(game_status, Game.Game_status):
+            self.game_status = game_status
+        elif isinstance(game_status, int):
+            self.game_status = Game.Game_status(game_status)
+        else:
+            self.game_status = Game.Game_status.NEW_GAME
+        
     
+        print ('Game returned by init: ', self, self.message)
+
+    def __set_template(self, word):
+        template = sub('[a-zA-Z]', '_', word)
+        return template
+
+    # -- functions not required
     def get_game_status(self):
         return self.game_status
-    
+
     def set_game_status(self, game_status):
-        self.game_status = self.Game_status (game_status)
-        return 
+        self.game_status = game_status
+        return
+
+    def get_game_name(self):
+        return self.__game_name 
     
-    
-#example declare and use class
-#x = Game('Rick','Beaver Dam')
-#print (x._create_template('Dolder')) #test private function cannot be run outside of class
-#print (x.get_game_status() )
-#print (x.score)
-#print (x.player_name)
-#print (x.game_status)
-#print (x.template)
-#x.set_game_status (2)
-#print (x.game_status)
-#print (x.game_ID)
-#x.set_game_status (x.Game_status['WON'])
-#
-#print (x.game_id)
+    def set_game_name(self, game_name):
+        self.__game_name = game_name
+    # ---------- helpers for session storage ----------
 
+    def to_dict(self):
+        """Serialize the game to plain types (for session / JSON)."""
+        return {
+            "game_id": self.game_id,
+            "game_name": self.get_game_name(),
+            "score": self.score,
+            "word": self.word,
+            "template": self.template,
+            "message": self.message,
+            "used_letters": self.used_letters,
+            "accepted_letters": self.accepted_letters,
+            "game_status": self.game_status.value,  # store enum as int
+        }
 
-    
-#def is_itwon():
-    # uses the output from make_guess to work out if the game 
-    # has been won or not and tells the main programme the status
-    #return None
-
-#def remaining_attempts(number):
-    #number -= 1
-    #return(number)
-
-#def display_word():
-    #return None
-    
-#def to_dict(self):
-    # this function is to store the game progress into the 
-    # persistence file so that it can be resumed later
-    #return None
-
-#def from_dict(data):
-    # this function is to restore the game progress 
-    # from the persistence file if the game is resumed later
-    # return None
+    @classmethod
+    def from_dict(cls, data: dict) -> "Game":
+        """Rebuild a Game instance from a dict (e.g. from session)."""
+        return cls(
+            game_name=data.get("game_name",""),
+            word=data["word"],
+            game_id=data.get("game_id", 1),
+            score=data.get("score", 10),
+            template=data.get("template"),
+            message=data.get("message"),
+            used_letters=data.get("used_letters", []),  # ✅ default to []
+            accepted_letters=data.get("accepted_letters", []),
+            game_status=Game.Game_status(data.get("game_status", 0)),
+        )
     
 
 

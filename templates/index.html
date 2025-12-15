@@ -1,35 +1,105 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <p>Enter Name:</p>
+
+    <form action="{{ url_for('reset') }}" method="post">
+        <button type="submit" id="reset">RESET</button>
+    </form>
+    
+
+    <p>
+    <p id="message">Name</p>
+    <p id="game_name">{{ game_name }}</p>
+
+
+
+    {% if game_status == 0 %}
+      <form action="{{ url_for('name_game') }}" method="post">
+          <p><input type="text" name="game_name" /></p>
+          <button type="submit" id="submit_name">GO!</button>
+          <p id="game_status">{{ game_status }}</p>
+      </form>
+    {% endif %}
+    
+    {% if game_status != 0 %}
 
     <form action="{{ url_for('new_game') }}" method="post">
         <button type="submit" id="new_game">NEW GAME</button>
     </form>
 
+    <form action="{{ url_for('show_line') }}" method="post">
+        <button type="submit" id="show_line">SHOW LINE</button>
+    </form>
+
     <p id="message">{{ message }}</p>
     <p id="template">{{ template }}</p>
-
-    <!-- Your name input if needed -->
-    <p><input type="text" name="nm" /></p>
-
-
+    <p id="lineLength">{{ lineLength }}</p>
+    <p id="game_status">{{ game_status }}</p>
 
     <!-- One form/button per letter -->
-    {% for letter in letters %}
+    {% for letter in accepted_letters %}
       <form action="{{ url_for('guess') }}" method="post" style="display:inline;">
         <button
           type="submit"
           name="letter"
           value="{{ letter }}"
           id="btn{{ letter }}"
-          {% if letter in disabled_letters %}disabled{% endif %}
+          {% if letter in used_letters %}disabled{% endif %}
         >
           {{ letter }}
         </button>
       </form>
-    {% endfor %}
+      {% endfor %}
+   </p>
+   
+   
 
-    
+    <canvas id="gallows" width="400" height="400" style="border:1px solid grey"></canvas>
+
+  {% endif %}
+
+    <script>
+      const lineLength = parseInt(
+    document.getElementById("lineLength").textContent,
+    10
+  );
+  function hasBit(n, mask) {
+    return (n & mask) !== 0;
+}
+      console.log("lineLength =", lineLength);
+
+  const c = document.getElementById("gallows");
+  const ctx = c.getContext("2d");
+
+  // Only draw this line if bit 0 (1) is set
+  if (hasBit(lineLength, 1)) {
+    ctx.beginPath();
+    ctx.moveTo(10, 90);
+    ctx.lineTo(10, 200);
+    ctx.stroke();
+  }
+
+  // Only draw this line if bit 1 (2) is set
+  if (hasBit(lineLength, 2)) {
+    ctx.beginPath();
+    ctx.moveTo(20, 20);
+    ctx.lineTo(20, 100);
+    ctx.stroke();
+  }
+
+  // Only draw this line if bit 2 (4) is set
+  
+  if (hasBit(lineLength, 3)) {
+    ctx.beginPath();
+    ctx.moveTo(20, 20);
+    ctx.lineTo(100, 20);
+    ctx.stroke();
+  }
+
+
+
+</script>
+
+
   </body>
 </html>
