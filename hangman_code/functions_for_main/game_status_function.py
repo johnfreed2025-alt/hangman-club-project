@@ -1,6 +1,6 @@
-from .data_handling import to_dict
-from .data_handling import from_dict
-from .data_handling import update_data
+from hangman_code.functions_for_main.data_handling import to_dict
+from hangman_code.functions_for_main.data_handling import from_dict
+from hangman_code.functions_for_main.data_handling import update_data
 from main import game_closed
 
 def Current_game_status():
