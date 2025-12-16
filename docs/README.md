@@ -8,7 +8,7 @@ Coverage:
 ---
 
 Test Pass Rate:  
-![Main Tests](https://img.shields.io/endpoint?url=https://lockleaze-community-coding-club.github.io/hangman-club-project/test_summary_main.json)
+[![Main Tests](https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg)]
 
 ---
 
@@ -21,7 +21,7 @@ Coverage:
 ---
 
 Test Pass Rate:  
-![Dev Tests](https://img.shields.io/endpoint?url=https://lockleaze-community-coding-club.github.io/hangman-club-project/test_summary_dev.json)
+[![Dev Tests](https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg)]
 
 ---
 
