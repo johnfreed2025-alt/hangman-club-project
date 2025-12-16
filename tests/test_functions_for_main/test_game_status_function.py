@@ -1,13 +1,11 @@
-from .data_handling import to_dict
-from .data_handling import from_dict
-from .data_handling import update_data
+import pytest
 
-def game_status_function():
+def test_game_status_function():
        #This function will update the status of the game e.g.
        # Is Won, Is Lost, In Play
        return None
 
-def is_won():
+def test_is_won():
     # takes an input from game_status
     # store game status / history (to dict)
     # include a running total of how many games have been played
@@ -16,12 +14,12 @@ def is_won():
     return None
 
 
-def is_lost():
+def test_is_lost():
     # similar to above in reverse
     return None
 
-def is_closed(game_closed,key,word_with_guessed_letters,data, json_filename ):
+def test_is_closed(game_closed,key,word_with_guessed_letters,data, json_filename ):
     #This is a function for if the game is exited:
-    to_dict(key,word_with_guessed_letters,data, json_filename)
+    #to_dict(key,word_with_guessed_letters,data, json_filename)
 
     return None
