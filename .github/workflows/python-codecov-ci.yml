@@ -28,15 +28,21 @@ jobs:
       # INSTALL DEPENDENCIES
       # ---------------------------------------------------------
     - name: Install dependencies
-      run: python -m pip install --upgrade pip
-           pip install -r requirements.txt
-           pip install -r requirements-dev.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
 
       # ---------------------------------------------------------
       # RUN TESTS (FAILURE RECORDED, PIPELINE CONTINUES)
       # ---------------------------------------------------------
-    - name: Run tests and collect coverage
-      run: pytest --cov=api.calculator --cov-report=xml
+    - name: Run tests and create coverage
+      run: |
+        mkdir -p test-results
+        pytest \
+        --junitxml=test-results/results.xml \
+        --cov=api.calculator \
+        --cov-report=xml:test-results/coverage.xml
       # ---------------------------------------------------------
       # UPLOAD COVERAGE TO CODECOV
       # ---------------------------------------------------------
