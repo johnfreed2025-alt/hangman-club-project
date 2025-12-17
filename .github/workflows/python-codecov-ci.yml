@@ -51,8 +51,10 @@ jobs:
       if: (!cancelled())
       uses: actions/checkout@v4
     - name: run tests and create coverage report
+      if: (!cancelled())
       run: pytest --cov .
     - name: Upload coverage reports to Codecov
+      if: (!cancelled())
       run: |
         # Replace `linux` below with the appropriate OS
         # Options are `alpine`, `linux`, `macos`, `windows`
