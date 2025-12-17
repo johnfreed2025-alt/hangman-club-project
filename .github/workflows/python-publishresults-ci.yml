@@ -2,7 +2,7 @@ name: Test Results
 
 on:
   workflow_run:
-    workflows: ["API Workflow"]
+    workflows: ["Lockleaze CI workflow"]
     types:
       - completed
 permissions: {}

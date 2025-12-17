@@ -1,4 +1,4 @@
-name: API workflow
+name: Lockleaze CI workflow
 
 on: [push, pull_request]
 
@@ -42,7 +42,7 @@ jobs:
   # SETUP FOR JOB: TEST
   # ---------------------------------------------------------
   Test:
-    name: Run tests
+    name: Pass_Tests
     needs: event_file
     runs-on: ubuntu-latest
     steps: 
@@ -83,7 +83,7 @@ jobs:
   # SETUP FOR JOB: CODECOV
   # ---------------------------------------------------------
   Codecov:
-    name: Setup Codecov
+    name: Check_Code_Coverage
     needs: Dependencies
     runs-on: ubuntu-latest
     if: always()
@@ -159,7 +159,7 @@ jobs:
   # LINTING 
   # ---------------------------------------------------------
   Flake8:
-    name: Run_Flake8
+    name: Lint
     needs: Black
     runs-on: ubuntu-latest
     steps: 
@@ -181,14 +181,16 @@ jobs:
     # ---------------------------------------------------------
     - name: Lint
       run: |
+        set +e   # turn off exit-on-error
         LINT_OUTPUT=$(flake8 .)
+        EXIT_CODE=$?
         echo "$LINT_OUTPUT"
-        if [ -n "$LINT_OUTPUT" ]; then
-          echo "Linting failed!"
-          exit 1
+
+        if [ $EXIT_CODE -ne 0 ]; then
+        echo "Linting failed!"
+        exit 1
         fi
-      # Run flake8 and capture output
-      # Fail the job if Lint Output is non-empty
+        set -e   # restore exit-on-error
 
       # ---------------------------------------------------------
       # MOVING ONTO TEST REPORT PUBLICATION
