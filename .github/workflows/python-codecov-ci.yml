@@ -48,8 +48,9 @@ jobs:
       # UPLOAD COVERAGE TO CODECOV
       # ---------------------------------------------------------
     - name: Create coverage report
+      if: (!cancelled())
       uses: actions/checkout@v4
-    - name: Run tests and collect coverage
+    - name: run tests and create coverage report
       run: pytest --cov .
     - name: Upload coverage reports to Codecov
       run: |
