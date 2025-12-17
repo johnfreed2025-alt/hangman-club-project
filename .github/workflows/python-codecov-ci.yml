@@ -45,6 +45,17 @@ jobs:
 #--cov . \
 #--cov-report=xml:test-results/coverage.xml \
       # ---------------------------------------------------------
+      # UPLOAD TEST RESULTS
+      # ---------------------------------------------------------
+    - name: Upload Test Results
+      if: (!cancelled())
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test Results
+        path: |
+          test-results/*.xml
+
+      # ---------------------------------------------------------
       # UPLOAD COVERAGE TO CODECOV
       # ---------------------------------------------------------
     - name: Setup Codecov
@@ -52,7 +63,9 @@ jobs:
       uses: actions/checkout@v4
     - name: Create coverage report
       if: (!cancelled())
-      run: pytest --cov .
+      run: |
+        pytest --cov .
+        --cov-report=xml:test-results/coverage.xml 
     - name: Upload coverage reports to Codecov
       if: (!cancelled())
       run: |
@@ -65,16 +78,6 @@ jobs:
        -F service \
        -f coverage-service.xml
 
-      # ---------------------------------------------------------
-      # UPLOAD TEST RESULTS
-      # ---------------------------------------------------------
-    - name: Upload Test Results
-      if: (!cancelled())
-      uses: actions/upload-artifact@v4
-      with:
-        name: Test Results
-        path: |
-          test-results/*.xml
       # ---------------------------------------------------------
       # FORMAT CODE WITH BLACK
       # Ref: https://towardsdatascience.com/black-with-git-hub-actions
