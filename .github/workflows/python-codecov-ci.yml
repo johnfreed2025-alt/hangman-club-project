@@ -83,12 +83,14 @@ jobs:
       # Ref: https://towardsdatascience.com/black-with-git-hub-actions
       # ---------------------------------------------------------
     - name: Format code with black
+      if: always()
       run: |
            black .
       # ---------------------------------------------------------
       # LINTING 
       # ---------------------------------------------------------
     - name: Run Flake8
+      if: always()
       run: |
             set +e
             flake8 .
