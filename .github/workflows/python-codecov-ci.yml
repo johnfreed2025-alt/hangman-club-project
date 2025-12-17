@@ -107,8 +107,8 @@ jobs:
       # ---------------------------------------------------------
     - name: Run Tests
       run: |
-        mkdir -p test-results
-        pytest --cov . --junitxml=test-results/results.xml --cov-report=xml:test-results/coverage-service.xml
+        mkdir -p codecov-results
+        pytest --cov . --junitxml=codecov-results/results.xml --cov-report=xml:codecov-results/coverage-service.xml
 
       # ---------------------------------------------------------
       # UPLOAD TEST RESULTS TO CODECOV
@@ -123,7 +123,7 @@ jobs:
        -t "${{ secrets.CODECOV_TOKEN }}" \
        -n "service-${{ github.run_id }}" \
        -F service \
-       -f test-results/coverage-service.xml
+       -f codecov-results/coverage-service.xml
 
   # ---------------------------------------------------------
   # JOB: FORMAT CODE WITH BLACK
