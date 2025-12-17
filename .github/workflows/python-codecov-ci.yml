@@ -37,18 +37,24 @@ jobs:
       # ---------------------------------------------------------
       # RUN TESTS (FAILURE RECORDED, PIPELINE CONTINUES)
       # ---------------------------------------------------------
-    - name: Run tests and create coverage
+    - name: Run tests 
       run: |
         mkdir -p test-results
         pytest \
         --junitxml=test-results/results.xml \
-        --cov . \
-        --cov-report=xml:test-results/coverage.xml \
+#--cov . \
+#--cov-report=xml:test-results/coverage.xml \
       # ---------------------------------------------------------
       # UPLOAD COVERAGE TO CODECOV
       # ---------------------------------------------------------
-    - name: Upload coverage reports to Codecov with GitHub Action
-      run: |  
+    - name: Create coverage report
+      uses: actions/checkout@v4
+    - name: Run tests and collect coverage
+      run: pytest --cov .
+    - name: Upload coverage reports to Codecov
+      run: |
+        # Replace `linux` below with the appropriate OS
+        # Options are `alpine`, `linux`, `macos`, `windows`
         curl -Os https://cli.codecov.io/latest/windows/codecov
         chmod +x codecov
         ./codecov --verbose upload-process --fail-on-error -t ${{ secrets.CODECOV_TOKEN }} -n 'service'-${{ github.run_id }} -F service -f coverage-service.xml
@@ -67,14 +73,12 @@ jobs:
       # Ref: https://towardsdatascience.com/black-with-git-hub-actions
       # ---------------------------------------------------------
     - name: Format code with black
-      if: (!cancelled())
       run: |
            black .
       # ---------------------------------------------------------
       # LINTING 
       # ---------------------------------------------------------
     - name: Run Flake8
-      if: (!cancelled())
       run: |
             set +e
             flake8 .
