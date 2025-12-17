@@ -10,7 +10,8 @@
 # these functions are all in the functions_for_main folder
 
 #-----------------------------------------------------------------------------
-
+from enum import Enum
+from hangman_code.game import Game
 from hangman_code.functions_for_main.validate_input import Validate_input
 from hangman_code.functions_for_main.make_guess import Make_guess
 from hangman_code.functions_for_main.game_status_function import Current_game_status
@@ -27,42 +28,31 @@ from hangman_code.functions_for_main.data_handling import global_dictionary_upda
 #-----------------------------------------------------------------------------
 #JUST WANTED TO HIGHLIGHT THIS IS NOT CHATGPT GENERATED. PURE ROANNE
 #-----------------------------------------------------------------------------
-"""This is the list of Configuration Variables and inputs for playing 
-the Game"""
+"""The list of public parameters for playing :
+These are needed as user inputs from app"""
 #-----------------------------------------------------------------------------
-key = ""
-guess_result = ["_","B","_","_","_","_"]
-letter = "" #input from the user
-json_filename = "persistence.json" #location of the data store
-used_letters = ["_"]
-attempts_remaining = 10
-current_game_status = "Not Started"
-guessed_word = [""]
-words_guessed = [""]
-current_score = 0
-word = "" # will get word from word_selection
-Start_Game_Selection = "" # will be click on New, Resume or Exit from the user,
-game_index = ""
+class load_game(Enum): 
+        NEW_GAME = 0
+        RESUME_GAME = 1
+        EXIT_GAME = 2
+        FACTORY_RESET = 3
+
+letter = None
+
+#-----------------------------------------------------------------------------
+"""Below is the list of private parameters for running main"""
+"""Else, the list of parameters for playing the Game is within Game.py"""
+#-----------------------------------------------------------------------------
+
+json_filename = "persistence.json"
 game_closed = False
-cumulative_score = 0
-number_of_games_played = 0
-number_of_games_won = 0
 #-----------------------------------------------------------------------------
-"""This is the constructor for the dictionary for the game data. It contains
-lots of useful inputs to be supplied by the user from app.py or
-from word_selection"""
+"""This is the constructor for the dictionary with various the 
+inputs needed in functions_for_main.The initialised data itself is in 
+game.py"""
 #-----------------------------------------------------------------------------
-data = {"word_progress": guess_result, 
-        "used_letter": used_letters,
-        "guessed_words": guessed_word,
-        "game_status" : current_game_status,
-        "remaining_attempts" : attempts_remaining,
-        "score_keeping" : current_score,
-        "cumulative_score" : cumulative_score,
-        "number_games_played" : number_of_games_played,
-        "number_games_won" : number_of_games_won,
-        "current_game_index" : game_index,
-        }
+data_constructor = Game()
+data = Game.__dict__
 
 #-----------------------------------------------------------------------------
 """These are the functions used in the main programme"""
@@ -73,86 +63,63 @@ data = {"word_progress": guess_result,
 #-----------------------------------------------------------------------------
 """This is the actual game logic / flow / main programme"""
 #-----------------------------------------------------------------------------
-def play_game(Start_Game_Selection):
+def play_game(load_game):
        
-        Start_game(letter, word, guess_result)
+        Start_game_Selection(load_game)
 
-        while attempts_remaining > 0 & game_closed == False:
+        Start_game(letter)
+
+        while data.attempts_remaining > 0 & game_closed == False:
 
                 try:
                        
-                        Validate_input(letter, used_letters)
+                        Validate_input(letter, data.used_letters)
 
                 except (TypeError, ValueError):
 
                         return "Code needs to be written to reset / try again"
 
                 else:
-                        results = Make_guess(letter, word, guess_result)
-                        guess_result = results.get("word_progress")
-                        current_game_status = Current_game_status()
+                        results = Make_guess(letter, data.word, data.guess_result)
+                        data.guess_result = results.get("word_progress")
+                        current_game_status = Current_game_status(results)
                         #This will update the status of the game e.g.
                                 # Is Won, Is Lost, In Play
 
-                        if current_game_status == "In Play":
+                        if current_game_status == 1: #"In Play via enum"
 
                                 in_play_data = update_in_play_data(
-                                        used_letters, 
-                                        guessed_word, 
-                                        attempts_remaining, 
-                                        current_score)
+                                        data.used_letters, 
+                                        data.guessed_word, 
+                                        data.attempts_remaining, 
+                                        data.current_score)
                                 
-                                new_guess_setup = setup_new_guess(in_play_data)
+                                setup_new_guess(in_play_data)
                                 #This will re-set the screen to allow the user 
                                 # to set up a new guess
 
-                        elif current_game_status == "Is Won":
+                        elif current_game_status == 2: # "Is Won" in Enum
                                is_won()
-                               Start_game_Selection()
+                               Start_game_Selection(load_game)
                                 # if new game, return to play game
-                                #missing some logic here
+                                #this logic should go into the
+                                #Start_game_selection function
                                       
                                
-                        elif current_game_status == "Is Lost":
+                        elif current_game_status == 3: #"Is Lost" in Enum
                                 is_lost()
-                                Start_game_Selection()
+                                Start_game_Selection(load_game)
                                 # if new game, return to play game
-                                #missing some logic here
+                                #this logic should go into the
+                                #Start_game_selection function
 
                 finally:
-                       
+                       is_closed(load_game == 4, json_filename, data)
                        #Logic to be worked out
-                       return None
+         #The dictionary will now be updated - ready to store in persistence
+         # if we wanted to resume the game later"""
+                       return game_closed == True
 
- 
-
-        is_closed()
-
-
-        """The dictionary will now be updated - ready to store in persistence
-          if we wanted to resume the game later"""
-
-        global_dictionary_update(
-                letter,
-                guessed_word,
-                current_game_status,
-                attempts_remaining,
-                current_score,
-                cumulative_score,
-                number_of_games_played,
-                number_of_games_won,
-                game_index,
-                )
-
-
-# These 3 functions below are what chatGPT suggested to do with 
-# the flask app. I think they are needed to configure the new game
-
-def admin ():
-    return None
-
-def send_registration():
-    return None
 
 
 
