@@ -1,3 +1,7 @@
+from hangman_code.game import Game
+from hangman_code.functions_for_main.data_handling import from_dict
+from hangman_code.word_selection import choose_word
+
 def Start_game_Selection (load_game):
     #User can select either start a new game, resume game, exit game
     # or factory reset. The input to this function is an enum
@@ -24,7 +28,9 @@ def Start_game_Selection (load_game):
     return None
 
 
-def Start_game(letter):
+def Start_game():
+    # get word from word selection
+    # get game object from Game
     return None
 
 
@@ -42,6 +48,7 @@ def new_game ():
     # This shall call on the word_selection class to get a word
     #  and pass this into the game Class constructor via the update_data 
     # function in data_handling.
+    # You will need to make a new object of game
     # It will need to select the 'new game' template
     # You will need to get hold of all of the other persistence data (such
     # as cumululative score etc) via data_handling
@@ -53,6 +60,8 @@ def new_game ():
 def resume_game ():
     
     # Consider that this enum class exists in game.py in the function design
+     # You will need to create a object from Game
+     # use data from from_dict for this
 
      #class Game_status(Enum): 
         #NEW_GAME = 0
