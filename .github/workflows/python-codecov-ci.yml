@@ -16,7 +16,7 @@ jobs:
         name: Event File
         path: ${{ github.event_path }}
 
-  build:
+  setup:
     runs-on: ubuntu-latest
     name: Test python API
     steps:
@@ -37,35 +37,46 @@ jobs:
       # ---------------------------------------------------------
       # RUN TESTS (FAILURE RECORDED, PIPELINE CONTINUES)
       # ---------------------------------------------------------
-    - name: Run tests 
+  Test:
+    name: Run tests
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run pytest
       run: |
         mkdir -p test-results
-        pytest \
-        --junitxml=test-results/results.xml \
-#--cov . \
-#--cov-report=xml:test-results/coverage.xml \
+        pytest --junitxml=test-results/results.xml
+
       # ---------------------------------------------------------
       # UPLOAD TEST RESULTS
       # ---------------------------------------------------------
-    - name: Upload Test Results
-      if: always()
-      uses: actions/upload-artifact@v4
+  Upload_test_results:
+    name: Upload Test Results
+    needs: Test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - uses: actions/upload-artifact@v4
       with:
         name: Test Results
-        path: |
-          test-results/*.xml
+        path: test-results/*.xml
 
       # ---------------------------------------------------------
       # UPLOAD COVERAGE TO CODECOV
       # ---------------------------------------------------------
-    - name: Setup Codecov
-      if: always()
-      uses: actions/checkout@v4
+  Codecov:
+    name: Setup Codecov
+    needs: setup
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - uses: actions/checkout@v4
     - name: Create coverage report
       if: always()
       run: |
-        pytest --cov . \
-          --cov-report=xml:test-results/coverage.xml
+          pytest --cov . \
+            --cov-report=xml:test-results/coverage.xml
     - name: Upload coverage reports to Codecov
       if: always()
       run: |
@@ -82,24 +93,34 @@ jobs:
       # FORMAT CODE WITH BLACK
       # Ref: https://towardsdatascience.com/black-with-git-hub-actions
       # ---------------------------------------------------------
-    - name: Format code with black
-      if: always()
+  Black:
+    name: Format_code_with_black
+    needs: setup
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Format
       run: |
-           black .
+        black .
       # ---------------------------------------------------------
       # LINTING 
       # ---------------------------------------------------------
-    - name: Run Flake8
-      if: always()
+  Flake8:
+    name: Run_Flake8
+    needs: setup
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Lint
       run: |
-            set +e
-            flake8 .
-            EXIT_CODE=$?
-            set -e
+        set +e
+        flake8 .
+        EXIT_CODE=$?
+        set -e
 
-            if [ $EXIT_CODE -ne 0 ]; then
-              echo "LINT_FAILED=true" >> $GITHUB_ENV
-            fi
+        if [ $EXIT_CODE -ne 0 ]; then
+        echo "LINT_FAILED=true" >> $GITHUB_ENV
+        fi
       # ---------------------------------------------------------
       # MOVING ONTO TEST REPORT PUBLICATION
       # ---------------------------------------------------------
