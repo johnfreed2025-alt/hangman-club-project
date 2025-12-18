@@ -1,10 +1,14 @@
 from json import load, dumps
-from main import data
 from hangman_code.functions_for_main.guessed_letters_and_words import used_letters_function
 from hangman_code.functions_for_main.guessed_letters_and_words import guessed_words_function
 from hangman_code.functions_for_main.scores_and_attempts_function import remaining_attempts_function
 from hangman_code.functions_for_main.scores_and_attempts_function import update_score_function
+from hangman_code.game import Game
 
+def initialise_game_and_data():
+        data_constructor = Game()
+        data = data_constructor.__dict__
+        return data 
 
 def update_data(key, value, data):
         #This updates the dictionary each time a guess is made

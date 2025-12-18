@@ -11,8 +11,8 @@ def Start_game_Selection (load_game):
         #EXIT_GAME = 2
         #FACTORY_RESET = 3
 
-  # if new game, return to play game in main                
-  # #this logic should go into this function
+  # there will be some sort of 'if' selection: e.g. a NEW_GAME will call the
+  #new_game function
 
 
     # To create all of these functions:
@@ -25,17 +25,14 @@ def Start_game_Selection (load_game):
     # Then write the next test the function has to pass - check the test fails
     # Then write the function code to pass the test
     # So on and so forth
-    return None
+    game_object = game_object = 0 # placeholder until game_object is 
+    #initialised properly
+    return game_object
 
 
-def Start_game():
+def new_game (Game_status):
     # get word from word selection
-    # get game object from Game
-    return None
-
-
-def new_game ():
-    
+    # get game object and data from data_handling.initialise_game_and_data
     # Consider that this enum class exists in game.py in the function design
 
      #class Game_status(Enum): 
@@ -52,12 +49,12 @@ def new_game ():
     # It will need to select the 'new game' template
     # You will need to get hold of all of the other persistence data (such
     # as cumululative score etc) via data_handling
-
-    return None
+    game_object = 0 # placeholder until game_object is initialised properly
+    return game_object
 
 # or 
 
-def resume_game ():
+def resume_game (Game_status):
     
     # Consider that this enum class exists in game.py in the function design
      # You will need to create a object from Game
@@ -68,6 +65,16 @@ def resume_game ():
         #IN_PLAY = 1
         #WON = 2
         #LOST = 3
+
+        # Return the game object
+    game_object = 0 # placeholder until game_object is initialised properly
+    return game_object
+
+def Start_game(letter, game_object):
+
+    #This loads the screen using the data from either new game or resume game
+    # The user can now enter the first letter
     return None
+
     # This shall call on the from_dict function in data_handling 
     # and pass data from persistance into the Game Class as the arguments

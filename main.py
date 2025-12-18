@@ -51,8 +51,9 @@ game_closed = False
 inputs needed in functions_for_main.The initialised data itself is in 
 game.py"""
 #-----------------------------------------------------------------------------
-data_constructor = Game()
-data = Game.__dict__
+
+# Now moved into data_handling so that all data and data handling are 
+# kept together (Seperation of concerns)
 
 #-----------------------------------------------------------------------------
 """These are the functions used in the main programme"""
@@ -67,34 +68,36 @@ def play_game(load_game):
        
         Start_game_Selection(load_game)
 
-        Start_game(letter)
+        game = Start_game(letter, Start_game_Selection(load_game))
+        # i.e. needs the letter from the user and the game object which is the
+        #return from Start_game_selection
 
-        while data.attempts_remaining > 0 & game_closed == False:
+        while game.attempts_remaining > 0 & game_closed == False:
 
                 try:
                        
-                        Validate_input(letter, data.used_letters)
+                        Validate_input(letter, game.used_letters)
 
                 except (TypeError, ValueError):
 
                         return "Code needs to be written to reset / try again"
 
                 else:
-                        results = Make_guess(letter, data.word, data.guess_result)
-                        data.guess_result = results.get("word_progress")
+                        results = Make_guess(letter, game.word, game.guess_result)
+                        game.guess_result = results.get("word_progress")
                         current_game_status = Current_game_status(results)
                         #This will update the status of the game e.g.
                                 # Is Won, Is Lost, In Play
 
                         if current_game_status == 1: #"In Play via enum"
 
-                                in_play_data = update_in_play_data(
-                                        data.used_letters, 
-                                        data.guessed_word, 
-                                        data.attempts_remaining, 
-                                        data.current_score)
+                                in_play_game = update_in_play_data(
+                                        game.used_letters, 
+                                        game.guessed_word, 
+                                        game.attempts_remaining, 
+                                        game.current_score)
                                 
-                                setup_new_guess(in_play_data)
+                                setup_new_guess(in_play_game)
                                 #This will re-set the screen to allow the user 
                                 # to set up a new guess
 
@@ -114,7 +117,7 @@ def play_game(load_game):
                                 #Start_game_selection function
 
                 finally:
-                       is_closed(load_game == 4, json_filename, data)
+                       is_closed(load_game == 4, json_filename, game)
                        #Logic to be worked out
          #The dictionary will now be updated - ready to store in persistence
          # if we wanted to resume the game later"""

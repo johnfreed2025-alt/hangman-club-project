@@ -6,22 +6,20 @@ Coverage:
 [![codecov](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
 
 ---
-
 Test Pass Rate:  
 [![Main Tests](https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg)]
-
 ---
 
 ## Dev Branch
 
+<div align="center">
+  <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project"><img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project" alt="Coverage Status"></a>
+  <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17.js"><img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Test Pass Rate"></a>
+</div>
+
 Coverage:  
-[![Coverage](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
+[![Coverage](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J)
 
-
----
-
-Test Pass Rate:  
-[![Dev Tests](https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg)]
 
 ---
 
