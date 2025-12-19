@@ -1,0 +1,199 @@
+name: Lockleaze CI workflow
+
+on: [push, pull_request]
+
+  # ---------------------------------------------------------
+  # CREATE THE EVENT FILE
+  # ---------------------------------------------------------
+
+jobs:
+  event_file:
+    name: "Event File"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Event File
+        path: ${{ github.event_path }}
+
+  # ---------------------------------------------------------
+  # JOB: CHECK DEPENDENCIES
+  # ---------------------------------------------------------
+  Dependencies:
+    name: Build env
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'    
+
+    # ---------------------------------------------------------
+    # INSTALL DEPENDENCIES
+    # ---------------------------------------------------------
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+  # ---------------------------------------------------------
+  # SETUP FOR JOB: TEST
+  # ---------------------------------------------------------
+  Test:
+    name: Pass_Tests
+    needs: event_file
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'    
+
+    # ---------------------------------------------------------
+    # INSTALL DEPENDENCIES
+    # ---------------------------------------------------------
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+    # ---------------------------------------------------------
+    # RUN TESTS
+    # ---------------------------------------------------------
+
+    - name: Run pytest
+      run: |
+        mkdir -p test-results
+        pytest --junitxml=test-results/results.xml
+
+      # ---------------------------------------------------------
+      # UPLOAD TEST RESULTS
+      # ---------------------------------------------------------
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test Results
+        path: test-results/*.xml
+
+  # ---------------------------------------------------------
+  # SETUP FOR JOB: CODECOV
+  # ---------------------------------------------------------
+  Codecov:
+    name: Check_Code_Coverage
+    needs: Dependencies
+    runs-on: ubuntu-latest
+    if: always()
+    steps: 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'    
+
+    # ---------------------------------------------------------
+    # INSTALL DEPENDENCIES
+    # ---------------------------------------------------------
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+      # ---------------------------------------------------------
+      # RUN TESTS AND CREATE REPORT
+      # ---------------------------------------------------------
+    - name: Run Tests
+      run: |
+        mkdir -p codecov-results
+        pytest --cov . --junitxml=codecov-results/results.xml --cov-report=xml:codecov-results/coverage-service.xml
+
+      # ---------------------------------------------------------
+      # UPLOAD TEST RESULTS TO CODECOV
+      # ---------------------------------------------------------
+    - name: Upload coverage reports to Codecov
+      if: always()
+      run: |
+       curl -fsSL https://cli.codecov.io/latest/linux/codecov -o codecov
+       chmod +x codecov
+       ./codecov upload-process \
+       --fail-on-error \
+       -t "${{ secrets.CODECOV_TOKEN }}" \
+       -n "service-${{ github.run_id }}" \
+       -F service \
+       -f codecov-results/coverage-service.xml
+
+  # ---------------------------------------------------------
+  # JOB: FORMAT CODE WITH BLACK
+  # Ref: https://towardsdatascience.com/black-with-git-hub-actions
+  # ---------------------------------------------------------
+  Black:
+    name: Format_code_with_black
+    needs: Dependencies
+    runs-on: ubuntu-latest
+    if: always()
+    steps: 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'    
+
+    # ---------------------------------------------------------
+    # INSTALL DEPENDENCIES
+    # ---------------------------------------------------------
+
+    - name: Install Black
+      run: |
+        python -m pip install --upgrade pip
+        pip install black
+
+    # ---------------------------------------------------------
+    # FORMAT WITH BLACK
+    # ---------------------------------------------------------
+    - name: Format
+      run: |
+        black .
+  # ---------------------------------------------------------
+  # LINTING 
+  # ---------------------------------------------------------
+  Flake8:
+    name: Lint
+    needs: Black
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'    
+
+    # ---------------------------------------------------------
+    # INSTALL DEPENDENCIES
+    # ---------------------------------------------------------
+
+    - name: Install Flake8
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+        pip install black
+    # ---------------------------------------------------------
+    # LINT WITH FLAKE 8
+    # ---------------------------------------------------------
+    - name: Lint
+      run: |
+        black .
+        set +e   # turn off exit-on-error
+        LINT_OUTPUT=$(flake8 .)
+        EXIT_CODE=$?
+        echo "$LINT_OUTPUT"
+
+        if [ $EXIT_CODE -ne 0 ]; then
+        echo "Linting failed!"
+        exit 1
+        fi
+        set -e   # restore exit-on-error
+
+      # ---------------------------------------------------------
+      # MOVING ONTO TEST REPORT PUBLICATION
+      # ---------------------------------------------------------

@@ -9,7 +9,8 @@ from re import sub
 
 class Game:
 
-    class Game_status(Enum):
+    class Game_status(Enum): # RP: I have made a note of this 
+        # in game_status_function
         NEW_GAME = 0
         IN_PLAY = 1
         WON = 2
@@ -17,53 +18,90 @@ class Game:
 
     def __init__(
         self,
-        game_name='',
-        word='Word 1',
+        game_name='', # I haven't used this elsewhere. Is it in app?
+        word=[""], # will get word from word_selection via the start_
+        #game function
         *,
-        game_id=1,
-        score=10,
+        game_id = 1,
+        current_score = 0,
         template=None,
-        message='game message',
-        used_letters=None,
+        message='game message', # RP: I don't think I have used this,
+        #although some functions_for_main return messages
+        used_letters=[""],
         game_started=True,
-        game_status=None,
-        accepted_letters = None
+        current_game_status=None,
+        accepted_letters = None, # RP: I haven't used this elsewhere atm
+        guess_result = [""],
+        attempts_remaining = 10,
+        guessed_word = [""], # this is the word in current play with guessed 
+        #letters
+        words_guessed = [""], # this is if the player tried to guess a full
+        #word rather than individual letters
+        Start_Game_Selection = "", # will be click on New, Resume 
+        # or Exit from the user. Guess this could need an enum?
+        game_closed = False,
+        cumulative_score = 0,
+        number_of_games_played = 0,
+        number_of_games_won = 0,
 
-    ):
-        self.game_id = game_id              # always 1 for now
+                ):
+        
+        self.game_id = id(self)              # This will produce a unique id 
+        #But we need to use update_data ind data handling to store it
+        #Straight away else is will keep changing
         self.__game_name = game_name
-        self.score = score                  # remaining attempts
+        self.score_keeping = current_score #I assumed this was some sort
+        # of calculated overall score that feeds into cumulative score
         self.word = word
         self.message = message
-        self.used_letters = used_letters if used_letters is not None else []
-        self.game_started = game_started
+        self.used_letter = used_letters if used_letters is not None else []
+        self.game_status = current_game_status
         # if template is not provided, generate it from the word
         self.template = template if template is not None else self.__set_template(word)
+        #---------------------------------------------------------------------
+        #In terms of seperation of concerns, does the below if statement
+        # below in the validate_inoput function?
+        #------------------------------------------------------------------
         self.accepted_letters = (
                                 accepted_letters
                                 if accepted_letters is not None
                                 else [chr(c) for c in range(ord("A"), ord("Z") + 1)]
                                 )
+        self.word_progress = guess_result
+        self.guessed_words = guessed_word
+        self.remaining_attempts = attempts_remaining
+        self.cumulative_score = cumulative_score
+        self.number_games_played = number_of_games_played
+        self.number_games_won = number_of_games_won
+        
         # default game status is NEW_GAME
         #self.game_status = (
             #game_status if isinstance(game_status, Game.Game_status)
             #else Game.Game_status.NEW_GAME
-        #)
-        if isinstance(game_status, Game.Game_status):
-            self.game_status = game_status
-        elif isinstance(game_status, int):
-            self.game_status = Game.Game_status(game_status)
+#)
+
+#----------------------------------------------------------------------------
+# I have similar to the below logic in main. 
+# I think it should belong in main as it is part of the flow?
+#----------------------------------------------------------------------------
+        if isinstance(current_game_status, Game.Game_status):
+            self.game_status = current_game_status
+        elif isinstance(current_game_status, int):
+            self.game_status = Game.Game_status(current_game_status)
         else:
             self.game_status = Game.Game_status.NEW_GAME
         
     
         print ('Game returned by init: ', self, self.message)
-
+#----------------------------------------------------------------------------
+#Seperation of concerns? I think this belongs in start_game
+#---------------------------------------------------------------------------
     def __set_template(self, word):
         template = sub('[a-zA-Z]', '_', word)
         return template
 
     # -- functions not required
+    # RP: They are required but are now in the game_status_function
     def get_game_status(self):
         return self.game_status
 
