@@ -1,4 +1,4 @@
-from hangman_code.functions_for_main.other_game_data import index
+from hangman_code.functions_for_play_game.other_game_data import index
 
 def new_game ():
     

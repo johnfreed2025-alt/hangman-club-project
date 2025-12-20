@@ -1,8 +1,8 @@
 from json import load, dumps
-from hangman_code.functions_for_main.guessed_letters_and_words import used_letters_function
-from hangman_code.functions_for_main.guessed_letters_and_words import guessed_words_function
-from hangman_code.functions_for_main.scores_and_attempts_function import remaining_attempts_function
-from hangman_code.functions_for_main.scores_and_attempts_function import update_score_function
+from hangman_code.functions_for_play_game.guessed_letters_and_words import used_letters_function
+from hangman_code.functions_for_play_game.guessed_letters_and_words import guessed_words_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import remaining_attempts_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_score_function
 from hangman_code.game import Game
 
 def initialise_game_and_data():
@@ -57,15 +57,15 @@ def global_dictionary_update(data):
         update_data("number_games_won", data.game_id, data)
 
 
-def from_dict(key,json_filename):
+def from_dict(json_filename):
         #if json_filename is None:
         #json_filename = config.json_filename
         #This function retrieves the game data from the storage area json
      
         with open(json_filename, 'r') as file: 
-                data = load(file) # this is the dictionary
-                value = data.get(key, None)  # returns None if key missing
-                return value
+                game = load(file) # this is the dictionary
+                #value = data.get(key, None)  # returns None if key missing
+                return game
 
 def to_dict(data, json_filename):
         #This function inputs game data to the storage area json

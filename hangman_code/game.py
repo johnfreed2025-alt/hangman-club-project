@@ -29,8 +29,8 @@ class Game:
         #although some functions_for_main return messages
         used_letters=[""],
         game_started=True,
-        current_game_status=None,
-        accepted_letters = None, # RP: I haven't used this elsewhere atm
+        current_game_status=[],
+        accepted_letters = [], # RP: used for app.py to display letters
         guess_result = [""],
         attempts_remaining = 10,
         guessed_word = [""], # this is the word in current play with guessed 
@@ -43,7 +43,6 @@ class Game:
         cumulative_score = 0,
         number_of_games_played = 0,
         number_of_games_won = 0,
-
                 ):
         
         self.game_id = id(self)              # This will produce a unique id 

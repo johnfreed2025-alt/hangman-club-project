@@ -1,4 +1,4 @@
-# main program
+
 #from word_selection import choose_word
 #from game import Game
 #from templates import Template
@@ -7,22 +7,21 @@
 """These are the functions used in the main programme"""
 #-----------------------------------------------------------------------------
 
-# these functions are all in the functions_for_main folder
+# these functions are all in the functions_for_play_game folder
 
 #-----------------------------------------------------------------------------
 from enum import Enum
 from hangman_code.game import Game
-from hangman_code.functions_for_main.validate_input import Validate_input
-from hangman_code.functions_for_main.make_guess import Make_guess
-from hangman_code.functions_for_main.game_status_function import Current_game_status
-from hangman_code.functions_for_main.start_game import Start_game
-from hangman_code.functions_for_main.game_status_function import setup_new_guess
-from hangman_code.functions_for_main.game_status_function import is_won
-from hangman_code.functions_for_main.game_status_function import is_lost
-from hangman_code.functions_for_main.game_status_function import is_closed
-from hangman_code.functions_for_main.data_handling import update_in_play_data
-from hangman_code.functions_for_main.start_game import Start_game_Selection
-from hangman_code.functions_for_main.data_handling import global_dictionary_update
+from hangman_code.functions_for_play_game.validate_input import Validate_input
+from hangman_code.functions_for_play_game.make_guess import Make_guess
+from hangman_code.functions_for_play_game.game_status_function import Current_game_status
+from hangman_code.functions_for_play_game.start_game import Start_game
+from hangman_code.functions_for_play_game.game_status_function import setup_new_guess
+from hangman_code.functions_for_play_game.game_status_function import is_won
+from hangman_code.functions_for_play_game.game_status_function import is_lost
+from hangman_code.functions_for_play_game.game_status_function import is_closed
+from hangman_code.functions_for_play_game.data_handling import update_in_play_data
+from hangman_code.functions_for_play_game.start_game import Start_game_Selection
 #-----------------------------------------------------------------------------
 """This is me showing off my kudos"""
 #-----------------------------------------------------------------------------
@@ -31,11 +30,7 @@ from hangman_code.functions_for_main.data_handling import global_dictionary_upda
 """The list of public parameters for playing :
 These are needed as user inputs from app"""
 #-----------------------------------------------------------------------------
-class load_game(Enum): 
-        NEW_GAME = 0
-        RESUME_GAME = 1
-        EXIT_GAME = 2
-        FACTORY_RESET = 3
+
 
 letter = None
 
@@ -48,7 +43,7 @@ json_filename = "persistence.json"
 game_closed = False
 #-----------------------------------------------------------------------------
 """This is the constructor for the dictionary with various the 
-inputs needed in functions_for_main.The initialised data itself is in 
+inputs needed in functions_for_play_game.The initialised data itself is in 
 game.py"""
 #-----------------------------------------------------------------------------
 
@@ -59,31 +54,33 @@ game.py"""
 """These are the functions used in the main programme"""
 #-----------------------------------------------------------------------------
 
-# I have moved these functions into the functions_for_main folder
+# I have moved these functions into the functions_for_play_game folder
 
 #-----------------------------------------------------------------------------
 """This is the actual game logic / flow / main programme"""
 #-----------------------------------------------------------------------------
-def play_game(load_game):
-       
-        Start_game_Selection(load_game)
+def load_game(selection):
+        current_game = Start_game_Selection(selection)
+        return current_game
 
-        game = Start_game(letter, Start_game_Selection(load_game))
+def play_game(current_game: dict, letter):
+       
+        game = Start_game(current_game, letter)
         # i.e. needs the letter from the user and the game object which is the
         #return from Start_game_selection
 
-        while game.attempts_remaining > 0 & game_closed == False:
+        while game["attempts_remaining"] > 0 & game_closed == False:
 
                 try:
                        
-                        Validate_input(letter, game.used_letters)
+                        Validate_input(letter, game["used_letters"])
 
                 except (TypeError, ValueError):
 
                         return "Code needs to be written to reset / try again"
 
                 else:
-                        results = Make_guess(letter, game.word, game.guess_result)
+                        results = Make_guess(letter, game["word"], game["guess_result"])
                         game.guess_result = results.get("word_progress")
                         current_game_status = Current_game_status(results)
                         #This will update the status of the game e.g.
@@ -117,18 +114,8 @@ def play_game(load_game):
                                 #Start_game_selection function
 
                 finally:
-                       is_closed(load_game == 4, json_filename, game)
+                       is_closed(load_game == None, json_filename, game)
                        #Logic to be worked out
          #The dictionary will now be updated - ready to store in persistence
          # if we wanted to resume the game later"""
                        return game_closed == True
-
-
-
-
-
-
-
-
-
-

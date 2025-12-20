@@ -1,5 +1,5 @@
 import pytest
-from hangman_code.functions_for_main.make_guess import Make_guess
+from hangman_code.functions_for_play_game.make_guess import Make_guess
 
 def test_make_guess_fills_all_matching_letters():
     """Test to check that a word with two or more of the same letter fills in

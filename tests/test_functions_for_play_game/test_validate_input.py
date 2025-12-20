@@ -1,5 +1,5 @@
 import pytest
-from hangman_code.functions_for_main.validate_input import Validate_input
+from hangman_code.functions_for_play_game.validate_input import Validate_input
 
 def test_validate_input_accepts_lowercase():
     """Test to check that the function can work with a 
