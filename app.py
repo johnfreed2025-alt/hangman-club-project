@@ -22,7 +22,7 @@ def index():
         selection = request.form.get("action")
         print(f"This is the selection : {selection}")
         session["game"] = load_game(selection)
-        print(f"This is the game input from Start Game Selection : {session["game"]}")
+        print(f"This is the game input from Start Game Selection : {session['game']}")
         return render_template("playing_game.html", game=session["game"],alphabet=string.ascii_uppercase)
     return render_template("index.html")
 
