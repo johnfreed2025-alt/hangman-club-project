@@ -1,0 +1,22 @@
+{
+        "game_name" : "Ronald",
+        "word" : ["D","O","G"], 
+        "game_id" : 42,
+        "current_score" : 52,
+        "template" : "Resume",
+        "message" : "The only way is up",
+        "used_letters" : ["A", "B", "C"],
+        "game_started" : "True",
+        "current_game_status" : 1,
+        "accepted_letters" :["O","G"],
+        "guess_result" : ["_","O","G"],
+        "attempts_remaining" : 2,
+        "guessed_word" : ["BOG"], 
+        "words_guessed" : ["BOG","FOG"], 
+        "Start_Game_Selection" : 2, 
+        "game_closed" : "False",
+        "cumulative_score" : 1010101012,
+        "number_of_games_played" : 100,
+        "selection" : 0
+
+}

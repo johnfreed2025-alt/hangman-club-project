@@ -1,8 +1,8 @@
 from json import load, dumps
-from hangman_code.functions_for_main.guessed_letters_and_words import used_letters_function
-from hangman_code.functions_for_main.guessed_letters_and_words import guessed_words_function
-from hangman_code.functions_for_main.scores_and_attempts_function import remaining_attempts_function
-from hangman_code.functions_for_main.scores_and_attempts_function import update_score_function
+from hangman_code.functions_for_play_game.guessed_letters_and_words import used_letters_function
+from hangman_code.functions_for_play_game.guessed_letters_and_words import guessed_words_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import remaining_attempts_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_score_function
 from hangman_code.game import Game
 
 def initialise_game_and_data():
@@ -14,17 +14,20 @@ def update_data(key, value, data):
         #This updates the dictionary each time a guess is made
         data.update({key: value})
 
-def update_in_play_data(letter, 
-                       guessed_word, 
+      
+def update_in_play_data(data, letter, 
+                       word_progress, message, guess_result,
                        attempts_remaining, 
-                       current_score):
+                       current_score, word_attempt):
+
+
 
         """The updates to the game data shall now be created"""
 
-        used_letters = used_letters_function(letter, used_letters)
+        used_letters = used_letters_function(letter, data["used_letters"])
         #This will update list of used letters
 
-        words_guessed = guessed_words_function(guessed_word, words_guessed)
+        words_guessed = guessed_words_function(word_attempt, words_guessed)
         #This will update the list of previously guessed words
 
         attempts_remaining = remaining_attempts_function(attempts_remaining)
@@ -32,6 +35,16 @@ def update_in_play_data(letter,
 
         current_score = update_score_function(current_score)
         #This will update the score value
+
+        data["guessed_word"] = word_progress
+        data["message"] = message
+        data["guess_result"] = guess_result
+        data["used_letters"] = used_letters
+        data["words_guessed"] = words_guessed
+        data["attempts_remaining"] = attempts_remaining
+        data["current_score"] = current_score
+
+        return data
 
 def global_dictionary_update(data):
 
@@ -57,15 +70,15 @@ def global_dictionary_update(data):
         update_data("number_games_won", data.game_id, data)
 
 
-def from_dict(key,json_filename):
+def from_dict(json_filename):
         #if json_filename is None:
         #json_filename = config.json_filename
         #This function retrieves the game data from the storage area json
      
         with open(json_filename, 'r') as file: 
-                data = load(file) # this is the dictionary
-                value = data.get(key, None)  # returns None if key missing
-                return value
+                game = load(file) # this is the dictionary
+                #value = data.get(key, None)  # returns None if key missing
+                return game
 
 def to_dict(data, json_filename):
         #This function inputs game data to the storage area json

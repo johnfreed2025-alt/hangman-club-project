@@ -1,10 +1,10 @@
-from hangman_code.functions_for_main.data_handling import to_dict
-from hangman_code.functions_for_main.data_handling import update_data
-from hangman_code.functions_for_main.scores_and_attempts_function import remaining_attempts_function
-from hangman_code.functions_for_main.scores_and_attempts_function import update_score_function
-from hangman_code.functions_for_main.scores_and_attempts_function import update_cunulative_number_of_games_played
-from hangman_code.functions_for_main.scores_and_attempts_function import update_cunulative_number_of_games_won
-from hangman_code.functions_for_main.scores_and_attempts_function import update_cunulative_score_function
+from hangman_code.functions_for_play_game.data_handling import to_dict
+from hangman_code.functions_for_play_game.data_handling import update_data
+from hangman_code.functions_for_play_game.scores_and_attempts_function import remaining_attempts_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_score_function
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_cunulative_number_of_games_played
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_cunulative_number_of_games_won
+from hangman_code.functions_for_play_game.scores_and_attempts_function import update_cunulative_score_function
 
 #--------------------------------------------------------------------------
 
@@ -21,8 +21,8 @@ from hangman_code.functions_for_main.scores_and_attempts_function import update_
 def Current_game_status(results):
        #This function will update the status of the game e.g.
        # Is Won, Is Lost, In Play
-       update_data()
-       return None
+       #Set it to return 1 for trial purposes. Function needs written.
+       return 1
 
 def is_won():
     update_data()
@@ -33,10 +33,9 @@ def is_won():
     # display the "you have won" screen
     # offer an option to start a new game
     return {
-          "message": "You won the game",
-          "cumulative score": "",
+          "message": "You won the game, Would you like to play again?",
+          "cumulative score":"",
           "No. of Games Won" : "",
-          "message" : "Would you like to play again?"
            }
 
 def is_lost():
@@ -48,7 +47,6 @@ def is_closed(load_game,json_filename, data ):
     #This is a function for if the game is exited:
     # A global update of all data shall be required
         #e.g. cumulative data, number of games won etc
-    update_data()
     to_dict(data, json_filename)
     return None
 

@@ -3,104 +3,46 @@
 # Relationship from routes_py - recieves feedback for the user and displays it"
 
 from flask import Flask, request, redirect, url_for, render_template, session
-#from string import ascii_uppercase
-# above was imported but unused
-#import hangman_code.main
-from  hangman_code.game import Game
+from hangman_code.play_game_functions import load_game
+from hangman_code.play_game_functions import play_game
+import string
+
 
 app = Flask(__name__)
 app.secret_key = "super-secret-key-change-this"
 
 
-# This runs every time one of the other routes is called 
-@app.route("/", methods=["GET"])
+# This is the home page. It has a selection of new game, resume game,
+# Factory reset or exit game.
+#The Start_game_selection function will return the game object with the correct
+# Data in it for its selection
+@app.route("/", methods=["GET", "POST"])
 def index():
-    game_data = session.get("game")
-
-    if game_data is None:
-        print ('No game yet')
-        game_started = False
-        template = None
-        score = None
-        game_status = None
-        game_name = None
-        message = ""
-        used_letters = []
-        accepted_letters = []
-    else:
-        game = Game.from_dict(game_data)
-        print ('in route/:', game.game_status.value,game.game_status.name)
-        template = game.template
-        score = game.score
-        game_status = game.game_status.value
-        message = game.message
-        used_letters = game.used_letters or []
-        accepted_letters = game.accepted_letters
-        game_name = game.get_game_name()
-        game_started = True   # if we have a game, it’s started
-        accepted_letters = game.accepted_letters
-
-    return render_template(
-        "index.html",
-        message=message,
-        template=template,
-        accepted_letters=accepted_letters,
-        used_letters=used_letters,
-        lineLength=7,
-        score=score,
-        game_status=game_status,
-        game_started=game_started,
-        game_name=game_name,
-
-    )
-
-@app.route("/new_game", methods=["POST"])
-def new_game():
-
-    new_game = Game()
-    session["game"] = new_game.to_dict()
-    return redirect(url_for("index"))
-
-
-@app.route("/name_game", methods=["POST"])
-def name_game():
-    # 1. Read the name from the form
-    game_name = request.form.get("game_name", "").strip()
-
-    # 2. Rebuild the current NEW_GAME object from session
-    current_game = session.get("game")
-    if not current_game:
-        # No game started → redirect safely
-        return redirect(url_for("index"))
-
-    game = Game.from_dict(current_game)
-
-    # 3. Update the game name and switch status to IN_PLAY
-    game.set_game_name (game_name)
-    game.set_game_status(Game.Game_status.IN_PLAY)
-
-    # 4. Store updated state back into session
-    session["game"] = game.to_dict()
-    print ('in name game:', game.game_status.value, game.game_status.name)
-
-    # 5. Back to the main page
-    return redirect(url_for("index"))
-
+    if request.method == "POST":
+        selection = request.form.get("action")
+        print(f"This is the selection : {selection}")
+        session["game"] = load_game(selection)
+        print(f"This is the game input from Start Game Selection : {session['game']}")
+        return render_template("playing_game.html", game=session["game"],alphabet=string.ascii_uppercase)
+    return render_template("index.html")
 
 
 @app.route("/guess", methods=["POST"])
 def guess():
-    #from flask import request, session, redirect, url_for
-    current_game = Game.from_dict(session["game"])
-    # Get the letter from the form
+
+    current_game = session["game"]
+    # Get the letter from the form / user
     letter = request.form.get("letter")
+    print(f"This is the letter selection : {letter}")
     if not letter:
         print("⚠️ /guess called without 'letter'. FORM DATA:", request.form)
         return redirect(url_for("index"))
-
+    # Send the letter to the programme to make the guess
+    game = play_game(current_game, letter)
+    # TO BE DONE BY VALIDATE INPUT
     # Normalize to uppercase (your letters list is A–Z)
-    letter = letter.upper()
-    print("Guessed:", letter)
+    #letter = letter.upper()
+    #print("Guessed:", letter)
 
     '''
     if letter.upper() in current_game.word.upper():
@@ -110,76 +52,52 @@ def guess():
         current_game.message = 'TRY AGAIN!'
     '''
 
-    letter_positions = []
-
-    for i, l in enumerate (current_game.word):
-        
-        if letter.upper() == l.upper():
-            letter_positions.append (i)
-
-    print ('COUNT ' , letter_positions.count)
-
-    if len(letter_positions) == 0:
-        print (letter, ': not found')
-        current_game.message = 'TRY AGAIN!'
-    else:
-        print ('positions', letter_positions)
-        current_game.message = 'WELL DONE!'
-        template_as_list = list(current_game.template)
-        for replace_position in letter_positions:
-            template_as_list [replace_position] = letter
-        current_game.template = "".join(template_as_list) 
-
-    if current_game.template.upper() == current_game.word.upper():
-        current_game.game_status = current_game.Game_status["WON"] 
-        current_game.message = 'WINNER!' 
-        print ('Status: ', current_game.game_status)       
-            
+    print("used_letters now in game:", game["used_letters"])
+    print(f"This is what session game returns after a guess {game}")
+    return render_template("playing_game.html", game=game, alphabet=string.ascii_uppercase)
 
 
+@app.route("/name_game", methods=["POST"])
+def name_game():
     
+    current_game = session["game"]
+
+    # 1. Read the name from the form
+    game_name = request.form.get("game_name").strip()
+
+    # 2. Add the game name to the local game object
+
+    current_game["game_name"] = game_name
+
+    #3. Update the current_game_status to in play
+    current_game["current_game_status"] = 1
+
+    # 4. Store updated object back into session
+    session["game"] = current_game
+    print ('in name game:', session["game"]["game_name"])
+
+    # 5. Back to the main page
+    return render_template("playing_game.html", game=session["game"], alphabet=string.ascii_uppercase)
 
 
-    # Update used_letters inside Game
-    if letter not in current_game.used_letters:
-        current_game.used_letters.append(letter)
-    
-
-
-    print("used_letters now in game:", current_game.used_letters)
-
-    # Your hangman logic (stubbed to your existing code)
-    # You probably want to use game.word instead of "ABACUS" eventually
-    #current_game.template = template
-    #current_game.message = template   # or a nicer message if you want
-
-    # Save updated game back to session
-    session["game"] = current_game.to_dict()
-
-    return redirect(url_for("index"))
-
+@app.route("/reset", methods=["POST"])
+def reset():
+    return redirect("/")
 
 @app.route("/show_line", methods=["POST"])
 def show_line():
     print('Hello')
     return redirect(url_for("index"))
 
+@app.route("/closed", methods=["POST"])
+def closed():
+    selection = request.form.get("action")
+    print(f"This is the selection : {selection}")
+    session["game"] = load_game(selection)
+    return render_template("closed.html")
 
-
-
-@app.route("/reset", methods=["POST"])
-def reset():
-    session.clear()
-    return redirect("/")
-
-
-# This is the root for the whole application
 if __name__ == '__main__':
     app.run(debug=True)
-
-"Relationship to main.py => Sends HTTP requests to, HTTP/HTTPS"
-"Relationship from main.py - recieves feedback "
-"for the user and displays it"
 
 
 
