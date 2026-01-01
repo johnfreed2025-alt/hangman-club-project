@@ -1,7 +1,8 @@
 #This is a test to test the word_selection function
 import pytest
 from re import fullmatch
-from hangman_code.word_selection import Word_selection
+from hangman_code.word_selection import choose_word
+from hangman_code.word_selection import parse_words
 #from hangman_code.functions_for_play_game.data_handling import to_dict
 import random
 
@@ -12,24 +13,24 @@ def test_input_error():
 
 def test_parse_words_returns_list_of_words():
     """Check that the words.txt file is parsed as a list of words."""
-    result = Word_selection.parse_words("tests/test_words.txt")
+    result = parse_words("tests/test_words.txt")
     expected = ["animal", "banana", "carrot", "donkey"]
     assert result == expected, f"Expected {expected}, but got {result}"
 
 def test_single_word_chosen():
     """Check that a single word is chosen from the list"""
     fake_list = ["red","yellow","pink","green"]
-    result = Word_selection.choose_word(fake_list)
+    result = choose_word(fake_list)
     assert result in fake_list, f"Expected one of {fake_list} but got {result}"
 
 def test_choose_word_error_returned_if_no_words_in_list():
     """Check that an error is returned if the list contains no words"""
     fake_list = []  
     with pytest.raises(ValueError):
-         Word_selection.choose_word(fake_list)
+         choose_word(fake_list)
 
 def test_word_selection_randomness():
-    results = {Word_selection() for _ in range(100)}
+    results = {choose_word() for _ in range(100)}
     # Expect that more than one unique word was selected
     msg = f"Word selection not random enough: {results}"
     assert len(results) > 1, msg
@@ -37,12 +38,12 @@ def test_word_selection_randomness():
 def test_format_returned_is_list():
     """Check that the actual return \
         value is a list at runtime."""
-    result = Word_selection("green")
+    result = choose_word("green")
     assert isinstance(result, list)
     """Expected word_selection() to return a list"""
 
 def test_word_length_is_reasonable():
-    words = Word_selection.parse_words("tests/test_words.txt")
+    words = parse_words("tests/test_words.txt")
 
     assert len(words) > 0
     assert all(len(word) < 47 for word in words)
