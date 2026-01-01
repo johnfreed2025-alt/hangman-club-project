@@ -1,55 +1,60 @@
 #This is a test to test the word_selection function
 import pytest
 from re import fullmatch
-import hangman_code.word_selection as word_selection
+from hangman_code.word_selection import Word_selection
+#from hangman_code.functions_for_play_game.data_handling import to_dict
+import random
 
 def test_input_error():
     """Check that an error is raised if words.txt does not exist."""
     with pytest.raises(FileNotFoundError):
-        word_selection.parse_words("notfound.txt")
-    #Issue 28
+        Word_selection.parse_words("notfound.txt")
 
-def test_parse_words():
+def test_parse_words_returns_list_of_words():
     """Check that the words.txt file is parsed as a list of words."""
-    result = word_selection.parse_words("test_words.txt")
+    result = Word_selection.parse_words("tests/test_words.txt")
     expected = ["animal", "banana", "carrot", "donkey"]
     assert result == expected, f"Expected {expected}, but got {result}"
-    # Issue 28
 
-def test_choose_word():
+def test_single_word_chosen():
     """Check that a single word is chosen from the list"""
     fake_list = ["red","yellow","pink","green"]
-    result = word_selection.choose_word(fake_list)
+    result = Word_selection.choose_word(fake_list)
     assert result in fake_list, f"Expected one of {fake_list} but got {result}"
-    #Issue 29
 
-def test_choose_word2():
+def test_choose_word_error_returned_if_no_words_in_list():
     """Check that an error is returned if the list contains no words"""
     fake_list = []  
     with pytest.raises(ValueError):
-         word_selection.choose_word(fake_list)
-    #Issue 29
+         Word_selection.choose_word(fake_list)
 
 def test_word_selection_randomness():
-    results = {word_selection() for _ in range(100)}
+    results = {Word_selection() for _ in range(100)}
     # Expect that more than one unique word was selected
     msg = f"Word selection not random enough: {results}"
     assert len(results) > 1, msg
-    #Issue 29
 
-
-def test_format_string():
+def test_format_returned_is_list():
     """Check that the actual return \
-        value is a string at runtime."""
-    result = word_selection("green")
-    assert isinstance(result, str)
-    """Expected word_selection() to return a string"""
+        value is a list at runtime."""
+    result = Word_selection("green")
+    assert isinstance(result, list)
+    """Expected word_selection() to return a list"""
 
-def test_length():
-     assert len (word_selection('hello')) > 0
-     assert len (word_selection('hello')) < 47
+def test_word_length_is_reasonable():
+    words = Word_selection.parse_words("tests/test_words.txt")
 
-def test_no_space():
+    assert len(words) > 0
+    assert all(len(word) < 47 for word in words)
+
+
+def test_no_white_space_returned():
     """Check that there is only one word supplied and there are no spaces"""
-    result = word_selection('hello')
+    result = Word_selection.choose_word(["hello","Dog"])
     assert fullmatch(r"[A-Za-z]+", result), f"Invalid string: {result}"
+
+def test_choose_word_returns_lowercase_letters():
+        word = "DOG"
+        expected = ["d","o","g"]
+        result = Word_selection.choose_word([word])
+        assert result == expected

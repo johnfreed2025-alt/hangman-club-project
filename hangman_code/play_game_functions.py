@@ -69,32 +69,46 @@ def play_game(current_game: dict, letter):
         # i.e. needs the letter from the user and the game object which is the
         #return from Start_game_selection
 
-        while game["attempts_remaining"] > 0 & game_closed == False:
+        while game["attempts_remaining"] > 0 and not game_closed:
+
 
                 try:
                        
                         Validate_input(letter, game["used_letters"])
 
+                
                 except (TypeError, ValueError):
+                        game["message"] = "Invalid input, try again"
+                        return game
 
-                        return "Code needs to be written to reset / try again"
 
                 else:
-                        results = Make_guess(letter, game["word"], game["guess_result"])
-                        game.guess_result = results.get("word_progress")
+                        results = Make_guess(letter, game["word"], game["guessed_word"])
+                        #This will update the status of the game e.g.
+                                # Is Won, Is Lost, In Play                        
                         current_game_status = Current_game_status(results)
+                        #These are the results returned from make guess
+
+                        message = results.get("message")
+                        guess_result = results.get("sucess")
+                        word_progress = results.get("word_progress")
                         #This will update the status of the game e.g.
                                 # Is Won, Is Lost, In Play
 
+
                         if current_game_status == 1: #"In Play via enum"
 
-                                in_play_game = update_in_play_data(
-                                        game.used_letters, 
-                                        game.guessed_word, 
-                                        game.attempts_remaining, 
-                                        game.current_score)
+                                in_play_game = update_in_play_data
+                                (current_game, 
+                                 letter, 
+                                 word_progress, 
+                                 message, 
+                                 guess_result, 
+                                 current_game["attempts_remaining"], 
+                                 current_game["current_score"]
+                                        )
                                 
-                                setup_new_guess(in_play_game)
+                                return in_play_game
                                 #This will re-set the screen to allow the user 
                                 # to set up a new guess
 
@@ -114,8 +128,8 @@ def play_game(current_game: dict, letter):
                                 #Start_game_selection function
 
                 finally:
-                       is_closed(load_game == None, json_filename, game)
+                       is_closed(load_game == 4, json_filename, game)
                        #Logic to be worked out
          #The dictionary will now be updated - ready to store in persistence
          # if we wanted to resume the game later"""
-                       return game_closed == True
+

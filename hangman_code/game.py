@@ -25,13 +25,12 @@ class Game:
         game_id = 1,
         current_score = 0,
         template=None,
-        message='game message', # RP: I don't think I have used this,
-        #although some functions_for_main return messages
+        message='game message', # Used in play_game errors
         used_letters=[""],
         game_started=True,
         current_game_status=[],
         accepted_letters = [], # RP: used for app.py to display letters
-        guess_result = [""],
+        guess_result = [""], # Sucess, Failure
         attempts_remaining = 10,
         guessed_word = [""], # this is the word in current play with guessed 
         #letters

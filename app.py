@@ -31,19 +31,14 @@ def index():
 def guess():
 
     current_game = session["game"]
-    # Get the letter from the form
+    # Get the letter from the form / user
     letter = request.form.get("letter")
-        # Get the letter from the form
+    print(f"This is the letter selection : {letter}")
     if not letter:
         print("⚠️ /guess called without 'letter'. FORM DATA:", request.form)
         return redirect(url_for("index"))
-    play_game(current_game, letter)
-
-    #SAVING FOR LATER
-    #if not letter:
-        #print("⚠️ /guess called without 'letter'. FORM DATA:", request.form)
-        #return redirect(url_for("index"))
-
+    # Send the letter to the programme to make the guess
+    game = play_game(current_game, letter)
     # TO BE DONE BY VALIDATE INPUT
     # Normalize to uppercase (your letters list is A–Z)
     #letter = letter.upper()
@@ -57,49 +52,9 @@ def guess():
         current_game.message = 'TRY AGAIN!'
     '''
 
-    letter_positions = []
-
-    for i, l in enumerate (current_game.word):
-        
-        if letter.upper() == l.upper():
-            letter_positions.append (i)
-
-    print ('COUNT ' , letter_positions.count)
-
-    if len(letter_positions) == 0:
-        print (letter, ': not found')
-        current_game.message = 'TRY AGAIN!'
-    else:
-        print ('positions', letter_positions)
-        current_game.message = 'WELL DONE!'
-        template_as_list = list(current_game.template)
-        for replace_position in letter_positions:
-            template_as_list [replace_position] = letter
-        current_game.template = "".join(template_as_list) 
-
-    if current_game.template.upper() == current_game.word.upper():
-        current_game.game_status = current_game.Game_status["WON"] 
-        current_game.message = 'WINNER!' 
-        print ('Status: ', current_game.game_status)       
-            
-
-    # Update used_letters inside Game
-    if letter not in current_game.used_letters:
-        current_game.used_letters.append(letter)
-    
-
-
-    print("used_letters now in game:", current_game.used_letters)
-
-    # Your hangman logic (stubbed to your existing code)
-    # You probably want to use game.word instead of "ABACUS" eventually
-    #current_game.template = template
-    #current_game.message = template   # or a nicer message if you want
-
-    # Save updated game back to session
-    #session["game"] = current_game.to_dict()
-
-    return redirect(url_for("index"))
+    print("used_letters now in game:", game["used_letters"])
+    print(f"This is what session game returns after a guess {game}")
+    return render_template("playing_game.html", game=game, alphabet=string.ascii_uppercase)
 
 
 @app.route("/name_game", methods=["POST"])
@@ -122,7 +77,7 @@ def name_game():
     print ('in name game:', session["game"]["game_name"])
 
     # 5. Back to the main page
-    return render_template("playing_game.html", game=session["game"])
+    return render_template("playing_game.html", game=session["game"], alphabet=string.ascii_uppercase)
 
 
 @app.route("/reset", methods=["POST"])
@@ -136,7 +91,9 @@ def show_line():
 
 @app.route("/closed", methods=["POST"])
 def closed():
-    request.form.get("action")
+    selection = request.form.get("action")
+    print(f"This is the selection : {selection}")
+    session["game"] = load_game(selection)
     return render_template("closed.html")
 
 if __name__ == '__main__':

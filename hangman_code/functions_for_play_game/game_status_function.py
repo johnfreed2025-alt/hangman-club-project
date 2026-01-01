@@ -21,8 +21,8 @@ from hangman_code.functions_for_play_game.scores_and_attempts_function import up
 def Current_game_status(results):
        #This function will update the status of the game e.g.
        # Is Won, Is Lost, In Play
-       update_data()
-       return None
+       #Set it to return 1 for trial purposes. Function needs written.
+       return 1
 
 def is_won():
     update_data()
@@ -48,7 +48,6 @@ def is_closed(load_game,json_filename, data ):
     #This is a function for if the game is exited:
     # A global update of all data shall be required
         #e.g. cumulative data, number of games won etc
-    update_data()
     to_dict(data, json_filename)
     return None
 

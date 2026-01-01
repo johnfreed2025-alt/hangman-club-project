@@ -34,9 +34,9 @@
      <!-- One form/button per letter -->
 <form action="{{ url_for('guess') }}" method="post">
   {% for letter in alphabet %}
-    <button name="letter" value="{{ letter }}" {% if letter in game["used_letters"] %}disabled{% endif %}>
-      {{ letter }}
-    </button>
+<button name="letter" value="{{ letter }}" {% if letter in game["used_letters"] %}disabled{% endif %}>
+    {{ letter }}
+</button>
   {% endfor %}
 </form>
 

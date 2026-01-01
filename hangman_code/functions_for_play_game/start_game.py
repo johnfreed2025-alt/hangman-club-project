@@ -1,6 +1,6 @@
+from hangman_code.word_selection import choose_word
 from hangman_code.game import Game
 from hangman_code.functions_for_play_game.data_handling import from_dict
-from hangman_code.word_selection import choose_word
 from enum import Enum
 
 
@@ -43,7 +43,7 @@ def Start_game_Selection(load_game):
     "current_score": 0,
     "template": None,
     "message": "game message",
-    "used_letters": ["D","O","G"],
+    "used_letters": [""],
     "game_started": True,
     "current_game_status": 0,
     "accepted_letters": [],
@@ -61,13 +61,13 @@ def Start_game_Selection(load_game):
 
     elif load_game == "2":
         game_object = {
-    "game_name" : 'Betty', # I haven't used this elsewhere. Is it in app?
+    "game_name" : "Betty", # I haven't used this elsewhere. Is it in app?
     "word" : ["D","O","G"],
     "game_id": 1,
     "current_score": 0,
     "template": None,
     "message": "game message",
-    "used_letters": [""],
+    "used_letters": ["D","G"],
     "game_started": True,
     "current_game_status": 1,
     "accepted_letters": [],
@@ -85,7 +85,7 @@ def Start_game_Selection(load_game):
 
     elif load_game == "3":
         game_object = {
-        "game_name" : '', # I haven't used this elsewhere. Is it in app?
+        "game_name" : '', # Should ideally be renamed to player_name
         "word" : ["D","O","G"],
         "game_id": 1,
         "current_score": 0,

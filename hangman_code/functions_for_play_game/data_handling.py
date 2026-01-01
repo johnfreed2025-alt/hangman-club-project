@@ -14,10 +14,13 @@ def update_data(key, value, data):
         #This updates the dictionary each time a guess is made
         data.update({key: value})
 
-def update_in_play_data(letter, 
-                       guessed_word, 
+      
+def update_in_play_data(data, letter, 
+                       word_progress, message, guess_result,
                        attempts_remaining, 
-                       current_score):
+                       current_score, guessed_word):
+
+
 
         """The updates to the game data shall now be created"""
 
@@ -32,6 +35,16 @@ def update_in_play_data(letter,
 
         current_score = update_score_function(current_score)
         #This will update the score value
+
+        data["guessed_word"] = word_progress
+        data["message"] = message
+        data["guess_result"] = guess_result
+        data["used_letters"] = used_letters
+        data["words_guessed"] = words_guessed
+        data["attempts_remaining"] = attempts_remaining
+        data["current_score"] = current_score
+
+        return data
 
 def global_dictionary_update(data):
 
