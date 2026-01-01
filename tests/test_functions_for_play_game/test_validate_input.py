@@ -5,7 +5,6 @@ def test_validate_input_accepts_lowercase():
     """Test to check that the function can work with a 
     lowercase letter"""
     test_letter = "a"
-    used_letters = ""
     test_result = Validate_input(test_letter, used_letters = "")
     assert test_result is True
 

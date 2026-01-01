@@ -33,10 +33,9 @@ def is_won():
     # display the "you have won" screen
     # offer an option to start a new game
     return {
-          "message": "You won the game",
-          "cumulative score": "",
+          "message": "You won the game, Would you like to play again?",
+          "cumulative score":"",
           "No. of Games Won" : "",
-          "message" : "Would you like to play again?"
            }
 
 def is_lost():

@@ -138,8 +138,9 @@ def test_to_dict_allows_overwrites(tmp_path):
 def test_to_dict_persists_values_which_are_not_overwritten(tmp_path):
     data = {"message": "hello", "attempts_remaining": 2, "word" : "a"}
     file_path = tmp_path / "test.json"
-    persist = to_dict(data, file_path)
+    to_dict(data, file_path)
     update_data = {"attempts_remaining": 100, "word" : "z"}
+    to_dict(update_data, file_path)
     with open(file_path) as f:
         saved = json.load(f)
     assert saved["message"] == "hello"
@@ -162,7 +163,7 @@ def test_check_json_file_is_found_for_from_dict():
     result = 1
     try:
         f = open("persistence.json")
-    except ValueError as err:
+    except ValueError:
         result = 2
     assert result == 1
     f.close()

@@ -42,8 +42,8 @@ letter = None
 json_filename = "persistence.json"
 game_closed = False
 #-----------------------------------------------------------------------------
-"""This is the constructor for the dictionary with various the 
-inputs needed in functions_for_play_game.The initialised data itself is in 
+"""This is the constructor for the dictionary with various the
+inputs needed in functions_for_play_game.The initialised data itself is in
 game.py"""
 #-----------------------------------------------------------------------------
 

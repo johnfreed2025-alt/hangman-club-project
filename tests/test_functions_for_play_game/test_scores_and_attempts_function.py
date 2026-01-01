@@ -7,7 +7,7 @@ def test_remaining_attempts():
     expected = [10, 9, 0, ValueError, ValueError]
     for i, x in enumerate(test_attempts):
         try:
-            result = Game.remaining_attempts(x)
+            result = remaining_attempts_function(x)
         except Exception as e:
             result = type(e)
         test_result[i] = result

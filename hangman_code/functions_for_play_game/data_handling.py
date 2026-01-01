@@ -18,16 +18,16 @@ def update_data(key, value, data):
 def update_in_play_data(data, letter, 
                        word_progress, message, guess_result,
                        attempts_remaining, 
-                       current_score, guessed_word):
+                       current_score, word_attempt):
 
 
 
         """The updates to the game data shall now be created"""
 
-        used_letters = used_letters_function(letter, used_letters)
+        used_letters = used_letters_function(letter, data["used_letters"])
         #This will update list of used letters
 
-        words_guessed = guessed_words_function(guessed_word, words_guessed)
+        words_guessed = guessed_words_function(word_attempt, words_guessed)
         #This will update the list of previously guessed words
 
         attempts_remaining = remaining_attempts_function(attempts_remaining)

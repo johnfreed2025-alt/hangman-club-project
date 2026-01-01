@@ -2,12 +2,12 @@
     "Start_Game_Selection": "",
     "accepted_letters": [],
     "attempts_remaining": 10,
-    "cumulative_score": 600,
+    "cumulative_score": 0,
     "current_game_status": 1,
     "current_score": 0,
     "game_closed": false,
     "game_id": 1,
-    "game_name": "Betty",
+    "game_name": "Ronald",
     "game_started": true,
     "guess_result": [
         ""
@@ -20,14 +20,11 @@
     "number_of_games_won": 0,
     "template": null,
     "used_letters": [
-        "D",
-        "G",
+        "",
         "O"
     ],
     "word": [
-        "D",
-        "O",
-        "G"
+        ""
     ],
     "words_guessed": [
         ""

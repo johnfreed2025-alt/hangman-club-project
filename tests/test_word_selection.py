@@ -4,7 +4,7 @@ from re import fullmatch
 from hangman_code.word_selection import choose_word
 from hangman_code.word_selection import parse_words
 #from hangman_code.functions_for_play_game.data_handling import to_dict
-import random
+
 
 def test_input_error():
     """Check that an error is raised if words.txt does not exist."""
