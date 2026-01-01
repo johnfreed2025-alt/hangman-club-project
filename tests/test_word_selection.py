@@ -9,7 +9,7 @@ import random
 def test_input_error():
     """Check that an error is raised if words.txt does not exist."""
     with pytest.raises(FileNotFoundError):
-        Word_selection.parse_words("notfound.txt")
+        parse_words("notfound.txt")
 
 def test_parse_words_returns_list_of_words():
     """Check that the words.txt file is parsed as a list of words."""
@@ -51,11 +51,11 @@ def test_word_length_is_reasonable():
 
 def test_no_white_space_returned():
     """Check that there is only one word supplied and there are no spaces"""
-    result = Word_selection.choose_word(["hello","Dog"])
+    result = choose_word(["hello","Dog"])
     assert fullmatch(r"[A-Za-z]+", result), f"Invalid string: {result}"
 
 def test_choose_word_returns_lowercase_letters():
         word = "DOG"
         expected = ["d","o","g"]
-        result = Word_selection.choose_word([word])
+        result = choose_word([word])
         assert result == expected
