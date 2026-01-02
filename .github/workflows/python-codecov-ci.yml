@@ -246,7 +246,7 @@ jobs:
         with:
           files: |
                 artifacts/test-results/results.xml
-                job-summary: true
+            job-summary: true
 
       - name: Write job summary to file
         if: always()
