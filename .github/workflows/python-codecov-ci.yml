@@ -285,13 +285,36 @@ jobs:
           color: ${{ env.BADGE_COLOR }}
           path: badge.svg
 
-      - name: Upload badge to Gist
-        # Upload only for master branch - trying to eliminate so works for dev and master
-        #i f: >
-        #github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master' ||
-        #github.event_name != 'workflow_run' && github.ref == 'refs/heads/master'
+      - name: Upload badge to Gist dev
+        # Upload only for dev branch 
+        if: >
+          (
+            github.event_name == 'workflow_run' &&
+            github.event.workflow_run.head_branch == 'dev'
+          ) ||
+          (
+            github.event_name != 'workflow_run' &&
+            startsWith(github.ref, 'refs/heads/dev')
+          )
         uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
         with:
           token: ${{ secrets.GIST_TOKEN }}
           gistURL: https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17
           file: badge.svg
+
+      - name: Upload badge to Gist main
+        # Upload only for main branch 
+        if: >
+          (
+            github.event_name == 'workflow_run' &&
+            github.event.workflow_run.head_branch == 'main'
+          ) ||
+          (
+            github.event_name != 'workflow_run' &&
+            startsWith(github.ref, 'refs/heads/main')
+          )
+        uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gistURL: https://gist.github.com/Rfp21/8f596c67ab549c273d1207d7ba5a55df
+          file: maintestbadge
