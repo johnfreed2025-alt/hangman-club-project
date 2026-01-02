@@ -247,16 +247,45 @@ jobs:
           files: |
                 artifacts/test-results/results.xml
 
+      - name: Write job summary to file
+        if: always()
+        run: |
+          # Write the GitHub Actions job summary (Markdown) to a file
+          cat $GITHUB_STEP_SUMMARY > test-summary.md
 
-       # - name: Publish Test Results
-       # uses: EnricoMi/publish-unit-test-result-action@v2
-       # id: test-results
-        #with:
-        #  check_name: "Test Results (${{ github.event.workflow_run.event || github.event_name }})"
-        #  commit: ${{ github.event.workflow_run.head_sha }}
-        #  event_file: artifacts/event.json
-        #  event_name: ${{ github.event.workflow_run.event }}
-        #  files: "artifacts/**/*.xml"
+      - name: Upload test summary to Gist - dev branch
+        # Test summary for display on README for dev branch
+        if: >
+          (
+            github.event_name == 'workflow_run' &&
+            github.event.workflow_run.head_branch == 'dev'
+          ) ||
+          (
+            github.event_name != 'workflow_run' &&
+            startsWith(github.ref, 'refs/heads/dev')
+          )
+        uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gistURL: https://gist.github.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e
+          file: test-summary.md
+
+      - name: Upload test summary to Gist - main branch
+        # Test summary for display on README for main branch
+        if: >
+          (
+            github.event_name == 'workflow_run' &&
+            github.event.workflow_run.head_branch == 'main'
+          ) ||
+          (
+            github.event_name != 'workflow_run' &&
+            startsWith(github.ref, 'refs/heads/main')
+          )
+        uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gistURL: https://gist.github.com/Rfp21/565e2174d18c6a53b22faa4a4c02141a
+          file: test-summary.md
 
       # ---------------------------------------------------------
       # CREATE AND PUBLISH THE TEST REPORT BADGE
