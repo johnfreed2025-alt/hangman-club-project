@@ -199,6 +199,7 @@ jobs:
       # ---------------------------------------------------------
   test-results:
     name: Test Results
+    needs: Test
     runs-on: ubuntu-latest
     permissions:
       checks: write
