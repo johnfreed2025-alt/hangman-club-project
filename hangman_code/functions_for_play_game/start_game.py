@@ -38,7 +38,7 @@ def Start_game_Selection(load_game):
     if load_game == "1":
         game_object = {
     "game_name" : '', # I haven't used this elsewhere. Is it in app?
-    "word" : [""],
+    "word" : ["C","A","T"],
     "game_id": 1,
     "current_score": 0,
     "template": None,
@@ -49,7 +49,7 @@ def Start_game_Selection(load_game):
     "accepted_letters": [],
     "guess_result": [""],
     "attempts_remaining": 10,
-    "guessed_word": [""],
+    "guessed_word": ["_","_","_"],
     "words_guessed": [""],
     "Start_Game_Selection": "",
     "game_closed": False,
@@ -73,7 +73,7 @@ def Start_game_Selection(load_game):
     "accepted_letters": [],
     "guess_result": [""],
     "attempts_remaining": 10,
-    "guessed_word": [""],
+    "guessed_word": ["_","_","_"],
     "words_guessed": [""],
     "Start_Game_Selection": "",
     "game_closed": False,
@@ -113,7 +113,17 @@ def Start_game_Selection(load_game):
 
 
 def new_game (Game_status):
+    
+#-----------------------------------------------------------------------
+
+#NEW GAME MUST MUTATE GUESSED_WORD INTO A LIST OF THE SAME LENGTH AS WORD
+#E.G IF WORD IS "DOG", "GUESSED WORD MUST BECOME ["_","_","_"]
+
+#-----------------------------------------------------------------------
+
+
     # get word from word selection
+    # Mutate guessed word into a list
     # get game object and data from data_handling.initialise_game_and_data
     # Consider that this enum class exists in game.py in the function design
 

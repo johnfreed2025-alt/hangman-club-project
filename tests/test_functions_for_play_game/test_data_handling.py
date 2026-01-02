@@ -2,7 +2,7 @@ import pytest
 import json
 from hangman_code.functions_for_play_game.data_handling import to_dict
 from hangman_code.functions_for_play_game.data_handling import from_dict
-from hangman_code.game import Game
+from hangman_code.functions_for_play_game.data_handling import update_in_play_data
 
 
 @pytest.fixture
@@ -203,5 +203,16 @@ def test_to_dict_from_dict_round_trip(tmp_path, from_dict_expected_keys_and_valu
     to_dict(data, file)
     result = from_dict(file)
     assert result == data
+
+def test_update_in_play_data_returns_a_dictionary(from_dict_expected_keys_and_values):
+    base_data = from_dict_expected_keys_and_values
+    result = update_in_play_data(base_data, "F",["_", "O", "G"], "This is a test", "success", 1, 50, "" )
+    assert isinstance(result, dict)
+
+def test_update_in_play_data_returns_a_updated_data(from_dict_expected_keys_and_values):
+    base_data = from_dict_expected_keys_and_values
+    result = update_in_play_data(base_data, "F",["_", "O", "G"], "This is a test", "success", 1, 50, "" )
+    print(result)
+    assert "test" in result["message"]
 
 

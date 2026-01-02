@@ -63,9 +63,10 @@ def load_game(selection):
         current_game = Start_game_Selection(selection)
         return current_game
 
-def play_game(current_game: dict, letter):
+def play_game(current_game: dict, letter, word_attempt):
        
-        game = Start_game(current_game, letter)
+        game = current_game
+        #game = Start_game(current_game, letter)
         # i.e. needs the letter from the user and the game object which is the
         #return from Start_game_selection
 
@@ -90,7 +91,7 @@ def play_game(current_game: dict, letter):
                         #These are the results returned from make guess
 
                         message = results.get("message")
-                        guess_result = results.get("sucess")
+                        guess_result = results.get("success")
                         word_progress = results.get("word_progress")
                         #This will update the status of the game e.g.
                                 # Is Won, Is Lost, In Play
@@ -98,14 +99,15 @@ def play_game(current_game: dict, letter):
 
                         if current_game_status == 1: #"In Play via enum"
 
-                                in_play_game = update_in_play_data
-                                (current_game, 
+                                in_play_game = update_in_play_data(
+                                 current_game, 
                                  letter, 
                                  word_progress, 
                                  message, 
                                  guess_result, 
                                  current_game["attempts_remaining"], 
-                                 current_game["current_score"]
+                                 current_game["current_score"], 
+                                 word_attempt
                                         )
                                 
                                 return in_play_game

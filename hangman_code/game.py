@@ -71,6 +71,7 @@ class Game:
         self.cumulative_score = cumulative_score
         self.number_games_played = number_of_games_played
         self.number_games_won = number_of_games_won
+        self.words_guessed = words_guessed
         
         # default game status is NEW_GAME
         #self.game_status = (

@@ -21,3 +21,6 @@ def Validate_input(letter, used_letters):
                 return True
         
 
+test = Validate_input("F",["D","G"])
+print(test)
+

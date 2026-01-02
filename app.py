@@ -31,29 +31,21 @@ def index():
 def guess():
 
     current_game = session["game"]
+    if not isinstance(current_game, dict):
+        raise TypeError(f"Expected dict for current_game, got {type(current_game)}")
     # Get the letter from the form / user
     letter = request.form.get("letter")
-    print(f"This is the letter selection : {letter}")
     if not letter:
         print("⚠️ /guess called without 'letter'. FORM DATA:", request.form)
         return redirect(url_for("index"))
+    word_attempt = request.form.get("word_attempt")
+    if not word_attempt:
+        word_attempt = ""
     # Send the letter to the programme to make the guess
-    game = play_game(current_game, letter)
-    # TO BE DONE BY VALIDATE INPUT
+    game = play_game(current_game, letter, word_attempt)
+    # TO BE DONE BY GUESSED_LETTERS_AND_WORDS
     # Normalize to uppercase (your letters list is A–Z)
     #letter = letter.upper()
-    #print("Guessed:", letter)
-
-    '''
-    if letter.upper() in current_game.word.upper():
-        print ('in word')
-    else:
-        print ('not in word ', current_game.word)
-        current_game.message = 'TRY AGAIN!'
-    '''
-
-    print("used_letters now in game:", game["used_letters"])
-    print(f"This is what session game returns after a guess {game}")
     return render_template("playing_game.html", game=game, alphabet=string.ascii_uppercase)
 
 

@@ -24,3 +24,14 @@ def test_make_guess_wrong_letter_guess():
     )
     assert test_result["success"] is False
     assert test_result["word_progress"] == ["_", "_", "_", "_", "_", "_"]
+
+def test_make_guess_different_list_lengths():
+    """Test to check that the function behaves as expected when the game is
+    initialised (i.e. the guessed word is converted into a list of the correct
+    length)"""
+    test_letter = "E"
+    with pytest.raises(ValueError):
+        Make_guess(
+        test_letter,
+        ["A", "B", "A", "C", "U", "S"],
+        [""])
