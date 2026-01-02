@@ -198,7 +198,7 @@ jobs:
       # MOVING ONTO TEST REPORT PUBLICATION
       # ---------------------------------------------------------
   test-results:
-    name: Test Results
+    name: Publish Test Results
     needs: Test
     runs-on: ubuntu-latest
     if: always()
@@ -305,7 +305,7 @@ jobs:
         continue-on-error: true
         with:
           label: Tests
-          status: '${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.tests }} tests, ${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.runs }} runs: ${{ fromJSON( steps.test-results.outputs.json ).conclusion }}'
+          status: '${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.tests }} tests, ${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.succ }} runs: ${{ fromJSON( steps.test-results.outputs.json ).conclusion }}'
           color: ${{ env.BADGE_COLOR }}
           path: badge.svg
 
