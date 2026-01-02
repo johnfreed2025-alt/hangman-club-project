@@ -14,13 +14,13 @@
     <!-- Main Branch Test Pass Rate -->
     <td align="center">
       **Main Branch Tests**<br>
-      <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
+      <a href="https://gist.github.com/Rfp21/8f596c67ab549c273d1207d7ba5a55df">
         <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Main Branch Test Pass Rate">
       </a>
     </td>
     <!-- Main Branch CodeCov Sunburst -->
     <td align="center">
-      **Main Branch Sunburst**<br>
+      **Main Branch CodeCov Sunburst**<br>
       <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/main">
         <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J" alt="Main Branch Sunburst">
       </a>
@@ -38,12 +38,13 @@
     <td align="center">
       **Dev Branch Tests**<br>
       <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
-        <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Dev Branch Test Pass Rate">
+        <img src="https://gist.githubusercontent.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg?cache=1"
+        alt="Dev Branch Test Pass Rate">
       </a>
     </td>
     <!-- Dev Branch CodeCov Sunburst -->
     <td align="center">
-      **Dev Branch Sunburst**<br>
+      **Dev Branch CodeCov Sunburst**<br>
       <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev">
         <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev/graphs/sunburst.svg?token=4K3REWZ51J" alt="Dev Branch Sunburst">
       </a>
