@@ -267,47 +267,43 @@ jobs:
 
       - name: Generate Test Summary SVG Badge
         run: |
-              # Safely read JSON output from the previous step
-              TEST_JSON='${{ steps.test-results.outputs.json }}'
+            TESTS=$(jq -r '.formatted.stats.tests' <<< '${{ steps.test-results.outputs.json }}')
+            PASSED=$(jq -r '.formatted.stats.tests_succ' <<< '${{ steps.test-results.outputs.json }}')
+            FAILED=$(jq -r '.formatted.stats.tests_fail' <<< '${{ steps.test-results.outputs.json }}')
+            ERRORS=$(jq -r '.formatted.stats.tests_error' <<< '${{ steps.test-results.outputs.json }}')
 
-              # Extract values with jq
-              TESTS=$(jq -r '.formatted.stats.tests' <<< "$TEST_JSON")
-              PASSED=$(jq -r '.formatted.stats.tests_succ' <<< "$TEST_JSON")
-              FAILED=$(jq -r '.formatted.stats.tests_fail' <<< "$TEST_JSON")
-              ERRORS=$(jq -r '.formatted.stats.tests_error' <<< "$TEST_JSON")
+            # Optional: calculate success rate for coloring
+            if [ "$TESTS" -gt 0 ]; then
+                  SUCCESS_PERCENT=$(( PASSED * 100 / TESTS ))
+            else
+                  SUCCESS_PERCENT=0
+            fi
 
-              # Optional: calculate success rate for coloring
-              if [ "$TESTS" -gt 0 ]; then
-                    SUCCESS_PERCENT=$(( PASSED * 100 / TESTS ))
-              else
-                    SUCCESS_PERCENT=0
-              fi
+            # Pick badge color based on success rate
+            if [ "$SUCCESS_PERCENT" -eq 100 ]; then
+                  COLOR="#4c1"       # green
+            elif [ "$SUCCESS_PERCENT" -ge 50 ]; then
+                  COLOR="#dfb317"    # yellow
+            else
+                  COLOR="#e05d44"    # red
+            fi
 
-              # Pick badge color based on success rate
-              if [ "$SUCCESS_PERCENT" -eq 100 ]; then
-                    COLOR="#4c1"       # green
-              elif [ "$SUCCESS_PERCENT" -ge 50 ]; then
-                    COLOR="#dfb317"    # yellow
-              else
-                    COLOR="#e05d44"    # red
-              fi
+            # Set SVG width and height
+            WIDTH=300
+            HEIGHT=40
 
-              # Generate SVG badge
-              cat <<EOF > test-summary.svg
-              <svg xmlns="http://www.w3.org/2000/svg" width="200" height="20">
-                <rect width="200" height="20" fill="#555"/>
-                <rect x="80" width="120" height="20" fill="$COLOR"/>
-                <text x="10" y="14" fill="#fff" font-family="Verdana" font-size="11">
-                  Tests: $TESTS
-                </text>
-                <text x="90" y="14" fill="#fff" font-family="Verdana" font-size="11">
-                  ✅ $PASSED / ❌ $FAILED
-                </text>
-              </svg>
-              EOF
-
-              # Optional debug
-              cat test-summary.svg
+            cat <<EOF > test-summary.svg
+            <svg xmlns="http://www.w3.org/2000/svg" width="$WIDTH" height="$HEIGHT">
+              <rect width="$WIDTH" height="$HEIGHT" fill="#555"/>
+              <rect x="100" width="$((WIDTH - 100))" height="$HEIGHT" fill="$COLOR"/>
+              <text x="10" y="28" fill="#fff" font-family="Verdana" font-size="16">
+                Tests: $TESTS
+              </text>
+             <text x="110" y="28" fill="#fff" font-family="Verdana" font-size="16">
+                ✅ $PASSED / ❌ $FAILED / ⚠️ $ERRORS
+              </text>
+            </svg>
+            EOF
 
       - name: Upload test summary to Gist - dev
         uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
