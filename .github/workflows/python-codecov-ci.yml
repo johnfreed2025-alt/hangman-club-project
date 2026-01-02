@@ -246,13 +246,14 @@ jobs:
         with:
           files: artifacts/test-results/results.xml
 
-      - name: Generate Markdown summary
+      - name: Generate Markdown summary from JSON
         run: |
+          TEST_JSON='${{ steps.test-results.outputs.json }}'
           echo "## Test Summary" > test-summary.md
           echo "" >> test-summary.md
-          echo "- Tests run: $(jq .formatted.stats.tests <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
-          echo "- Passed: $(jq .formatted.stats.passes <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
-          echo "- Failed: $(jq .formatted.stats.failures <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
+          echo "- Tests run: $(echo "$TEST_JSON" | jq -r '.formatted.stats.tests')" >> test-summary.md
+          echo "- Passed: $(echo "$TEST_JSON" | jq -r '.formatted.stats.passes // .formatted.stats.successes // 0')" >> test-summary.md
+          echo "- Failed: $(echo "$TEST_JSON" | jq -r '.formatted.stats.failures // .formatted.stats.errors // 0')" >> test-summary.md
 
       - name: Debug Markdown
         run: cat test-summary.md
