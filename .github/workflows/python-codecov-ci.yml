@@ -250,8 +250,13 @@ jobs:
       - name: Write job summary to file
         if: always()
         run: |
-          # Write the GitHub Actions job summary (Markdown) to a file
-          cat $GITHUB_STEP_SUMMARY > test-summary.md
+            # Write the GitHub Actions job summary (Markdown) to a file
+            cat $GITHUB_STEP_SUMMARY > test-summary.md
+
+      - name: Debug job summary
+        run: |
+            echo "Job summary content:"
+            cat $GITHUB_STEP_SUMMARY
 
       - name: Upload test summary to Gist - dev branch
         # Test summary for display on README for dev branch
