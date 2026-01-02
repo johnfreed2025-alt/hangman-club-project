@@ -248,12 +248,20 @@ jobs:
 
       - name: Generate Markdown summary from JSON
         run: |
-          TEST_JSON='${{ steps.test-results.outputs.json }}'
-          echo "## Test Summary" > test-summary.md
-          echo "" >> test-summary.md
-          echo "- Tests run: $(echo "$TEST_JSON" | jq -r '.formatted.stats.tests')" >> test-summary.md
-          echo "- Passed: $(echo "$TEST_JSON" | jq -r '.formatted.stats.passes // .formatted.stats.successes // 0')" >> test-summary.md
-          echo "- Failed: $(echo "$TEST_JSON" | jq -r '.formatted.stats.failures // .formatted.stats.errors // 0')" >> test-summary.md
+        TEST_JSON='${{ steps.test-results.outputs.json }}'
+
+        TESTS=$(echo "$TEST_JSON" | jq -r '.formatted.stats.tests')
+        PASSED=$(echo "$TEST_JSON" | jq -r '.formatted.stats.tests_succ')
+        FAILED=$(echo "$TEST_JSON" | jq -r '.formatted.stats.tests_fail')
+        ERRORS=$(echo "$TEST_JSON" | jq -r '.formatted.stats.tests_error')
+
+        echo "## Test Summary" > test-summary.md
+        echo "" >> test-summary.md
+        echo "- Tests run: $TESTS" >> test-summary.md
+        echo "- Passed: $PASSED" >> test-summary.md
+        echo "- Failed: $FAILED" >> test-summary.md
+        echo "- Errors: $ERRORS" >> test-summary.md
+
 
       - name: Debug Markdown
         run: cat test-summary.md
