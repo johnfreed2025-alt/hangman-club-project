@@ -244,18 +244,18 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
-          files: |
-                artifacts/test-results/results.xml
-            job-summary: true
+          files: artifacts/test-results/results.xml
 
-      - name: Write job summary to file
-        if: always()
-        run: cat $GITHUB_STEP_SUMMARY > test-summary.md
-
-      - name: Debug job summary
+      - name: Generate Markdown summary
         run: |
-            echo "Job summary content:"
-            cat $GITHUB_STEP_SUMMARY
+          echo "## Test Summary" > test-summary.md
+          echo "" >> test-summary.md
+          echo "- Tests run: $(jq .formatted.stats.tests <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
+          echo "- Passed: $(jq .formatted.stats.passes <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
+          echo "- Failed: $(jq .formatted.stats.failures <<< '${{ steps.test-results.outputs.json }}')" >> test-summary.md
+
+      - name: Debug Markdown
+        run: cat test-summary.md
 
       - name: Upload test summary to Gist - dev
         uses: andymckay/append-gist-action@6e8d64427fe47cbacf4ab6b890411f1d67c07f3e
