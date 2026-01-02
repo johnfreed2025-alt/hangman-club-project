@@ -1,7 +1,6 @@
 # 🎮 Hangman Game (Python Project)
 
 # Hangman Club Project Quality Badges
-
 <table>
   <tr>
     <!-- Main Branch Coverage -->
@@ -16,7 +15,7 @@
       **Main Branch Tests**<br>
       <a href="https://gist.github.com/Rfp21/8f596c67ab549c273d1207d7ba5a55df">
         <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Main Branch Test Pass Rate">
-        <script src="https://gist.github.com/Rfp21/565e2174d18c6a53b22faa4a4c02141a.js"></script>
+        https://gist.github.com/Rfp21/565e2174d18c6a53b22faa4a4c02141a
       </a>
     </td>
     <!-- Main Branch CodeCov Sunburst -->
@@ -41,7 +40,7 @@
       <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
         <img src="https://gist.githubusercontent.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg?cache=1"
         alt="Dev Branch Test Pass Rate">
-        <script src="https://gist.github.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e.js"></script>
+        https://gist.github.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e
       </a>
     </td>
     <!-- Dev Branch CodeCov Sunburst -->
