@@ -233,6 +233,7 @@ jobs:
       # PUBLISH TEST RESULTS TO GITHUB
       # ---------------------------------------------------------
       - name: Publish Test Results
+        id: test-results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
