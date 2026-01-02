@@ -46,7 +46,7 @@
     <td align="center">
       **Dev Branch Test Summary**<br>
       <a href="https://gist.github.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e">
-        <img src="https://gist.githubusercontent.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e/raw/1ce09eef47420f2f6c9c319ab9aeee5867cfdd78/test-summary.svg" alt="Dev Branch Test Summary" width="120" height="40">
+        <img src="https://gist.githubusercontent.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e/raw/test-summary.svg" alt="Dev Branch Test Summary" width="120" height="80">
       </a>
     </td>
     <td align="center">
