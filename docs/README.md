@@ -1,6 +1,6 @@
 # 🎮 Hangman Game (Python Project)
 
-# Hangman Club Project Badges
+# Hangman Club Project Quality Badges
 
 <table>
   <tr>
@@ -18,7 +18,7 @@
         <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Main Branch Test Pass Rate">
       </a>
     </td>
-    <!-- Main Branch Sunburst -->
+    <!-- Main Branch CodeCov Sunburst -->
     <td align="center">
       **Main Branch Sunburst**<br>
       <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/main">
@@ -41,7 +41,7 @@
         <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Dev Branch Test Pass Rate">
       </a>
     </td>
-    <!-- Dev Branch Sunburst -->
+    <!-- Dev Branch CodeCov Sunburst -->
     <td align="center">
       **Dev Branch Sunburst**<br>
       <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/dev">
