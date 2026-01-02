@@ -62,3 +62,9 @@ def test_validate_input_cannot_repeat_previously_guessed_letter():
                 Validate_input(test_letter, used_letters)
     assert "previously guessed" in str(exc_info.value)
 
+def test_validate_input_loops_through_used_letters():
+        with pytest.raises(ValueError) as exc_info:
+                used_letters = ["D","G","E"]
+                test_letter = "E"
+                Validate_input(test_letter, used_letters)
+        assert "previously guessed" in str(exc_info.value)

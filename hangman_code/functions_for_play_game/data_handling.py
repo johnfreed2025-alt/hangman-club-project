@@ -27,7 +27,7 @@ def update_in_play_data(data, letter,
         used_letters = used_letters_function(letter, data["used_letters"])
         #This will update list of used letters
 
-        words_guessed = guessed_words_function(word_attempt, words_guessed)
+        words_guessed = guessed_words_function(word_attempt, data["words_guessed"])
         #This will update the list of previously guessed words
 
         attempts_remaining = remaining_attempts_function(attempts_remaining)

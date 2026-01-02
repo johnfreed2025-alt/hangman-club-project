@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
         <h1>LOCKLEAZE CODING CLUB HANGMAN GAME</h1> 
-        <h2>"Template behaving badly"</h2><br>
+        <h2>"Make Me Pretty. I want to be stylish"</h2><br>
         
   <body>
 
@@ -30,7 +30,13 @@
     <p id="template">TEMPLATE: {{ game["template"] }}</p>
     <p id="game_status">GAME STATUS: {{ game["current_game_status"] }}</p>
     <p id="score">SCORE: {{ game["score"] }}</p>
-
+    <p>GUESS THE WORD</p>
+          <form action="{{ url_for('guess') }}" method="post">
+          <p><input type="text" name="guess_the_word" /></p>
+          <button type="submit" id="submit_word_attempt">GO!</button>
+          <p id="word_attempt">{{ game["word_attempt"]}}</p>
+      </form>
+   <p>
      <!-- One form/button per letter -->
 <form action="{{ url_for('guess') }}" method="post">
   {% for letter in alphabet %}

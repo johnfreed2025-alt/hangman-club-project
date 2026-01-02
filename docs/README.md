@@ -1,25 +1,55 @@
 # 🎮 Hangman Game (Python Project)
 
-## Main Branch
+# Hangman Club Project Badges
 
-Coverage:  
-[![codecov](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project)
-
----
-Test Pass Rate:  
-[![Main Tests](https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg)]
----
-
-## Dev Branch
-
-<div align="center">
-  <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J)](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project"><img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project" alt="Coverage Status"></a>
-  <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17.js"><img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Test Pass Rate"></a>
-</div>
-
-Coverage:  
-[![Coverage](https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J)
-
+<table>
+  <tr>
+    <!-- Main Branch Coverage -->
+    <td align="center">
+      **Main Branch Coverage**<br>
+      <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project">
+        <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J" alt="Main Branch Coverage">
+      </a>
+    </td>
+    <!-- Main Branch Test Pass Rate -->
+    <td align="center">
+      **Main Branch Tests**<br>
+      <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
+        <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Main Branch Test Pass Rate">
+      </a>
+    </td>
+    <!-- Main Branch Sunburst -->
+    <td align="center">
+      **Main Branch Sunburst**<br>
+      <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project">
+        <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J" alt="Main Branch Sunburst">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <!-- Dev Branch Coverage -->
+    <td align="center">
+      **Dev Branch Coverage**<br>
+      <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project">
+        <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graph/badge.svg?token=4K3REWZ51J" alt="Dev Branch Coverage">
+      </a>
+    </td>
+    <!-- Dev Branch Test Pass Rate -->
+    <td align="center">
+      **Dev Branch Tests**<br>
+      <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
+        <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Dev Branch Test Pass Rate">
+      </a>
+    </td>
+    <!-- Dev Branch Sunburst -->
+    <td align="center">
+      **Dev Branch Sunburst**<br>
+      <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project">
+        <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J" alt="Dev Branch Sunburst">
+      </a>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -57,8 +87,9 @@ Hangman is a word guessing game where the player tries to uncover a secret word 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/hangman-club-project.git
-   cd hangman-project
+   git clone https://github.com/Lockleaze-Community-Coding-Club/hangman-club-project.git
+   cd hangman-club-project
+
    ```
 
 2. **Create a virtual environment** :
