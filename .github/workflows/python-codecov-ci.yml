@@ -201,6 +201,7 @@ jobs:
     name: Test Results
     needs: Test
     runs-on: ubuntu-latest
+    if: always()
     permissions:
       checks: write
 
