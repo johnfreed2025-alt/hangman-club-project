@@ -229,6 +229,13 @@ jobs:
         #with:
           #run_id: ${{ github.event.workflow_run.id }}
           #path: artifacts
+
+      - name: Download test results artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Test Results
+          path: artifacts/test-results
+
       # ---------------------------------------------------------
       # PUBLISH TEST RESULTS TO GITHUB
       # ---------------------------------------------------------
