@@ -16,10 +16,11 @@
       **Main Branch Tests**<br>
       <a href="https://gist.github.com/Rfp21/8f596c67ab549c273d1207d7ba5a55df">
         <img src="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg" alt="Main Branch Test Pass Rate">
+        <script src="https://gist.github.com/Rfp21/565e2174d18c6a53b22faa4a4c02141a.js"></script>
       </a>
     </td>
     <!-- Main Branch CodeCov Sunburst -->
-    <td align="center">
+    <td align="center","top">
       **Main Branch CodeCov Sunburst**<br>
       <a href="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/branch/main">
         <img src="https://codecov.io/gh/Lockleaze-Community-Coding-Club/hangman-club-project/graphs/sunburst.svg?token=4K3REWZ51J" alt="Main Branch Sunburst">
@@ -40,6 +41,7 @@
       <a href="https://gist.github.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17">
         <img src="https://gist.githubusercontent.com/Rfp21/90fb2d9a1d7587a677b407d04de38e17/raw/badge.svg?cache=1"
         alt="Dev Branch Test Pass Rate">
+        <script src="https://gist.github.com/Rfp21/31c462ebe1d7a75e5a8e367fcb0c538e.js"></script>
       </a>
     </td>
     <!-- Dev Branch CodeCov Sunburst -->
