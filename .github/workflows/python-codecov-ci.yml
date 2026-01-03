@@ -317,7 +317,7 @@ jobs:
 
               <!-- Background -->
               <rect rx="$RADIUS" width="$WIDTH" height="$HEIGHT" fill="$COLOR"/>
-              <rect rx="$RADIUS" x="110" width="$((WIDTH - 110))" height="$HEIGHT" fill=#ffffff"/>
+              <rect rx="$RADIUS" x="110" width="$((WIDTH - 110))" height="$HEIGHT" fill="#ffffff"/>
 
               <!-- Title -->
               <text x="55" y="38"
