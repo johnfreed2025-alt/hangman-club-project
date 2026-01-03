@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+        <h1>LOCKLEAZE CODING CLUB HANGMAN GAME</h1> 
+        <h2>"Make Me Pretty. I want to be stylish"</h2><br>
+        
+  <body>
+
+    <form action="{{ url_for('reset') }}" method="post">
+        <button type="submit" id="reset">RESET</button>
+    </form>
+    
+    <p>Name</p>
+    <p id="game_name">{{ game["game_name"] }}</p>
+
+    {% if game["current_game_status"] == 0 %}
+      <form action="{{ url_for('name_game') }}" method="post">
+          <p><input type="text" name="game_name" /></p>
+          <button type="submit" id="submit_name">GO!</button>
+          <p id="game_status">{{ game["current_game_status"]}}</p>
+      </form>
+    {% endif %}
+    
+    {% if game["current_game_status"] != 0 %}
+
+    <form action="{{ url_for('show_line') }}" method="post">
+        <button type="submit" id="show_line">SHOW LINE</button>
+    </form>
+
+    <p id="message">this is where message goes on the screen:  {{ game["message"] }}</p>
+    <p id="template">TEMPLATE: {{ game["template"] }}</p>
+    <p id="game_status">GAME STATUS: {{ game["current_game_status"] }}</p>
+    <p id="score">SCORE: {{ game["score"] }}</p>
+    <p>GUESS THE WORD</p>
+          <form action="{{ url_for('guess') }}" method="post">
+          <p><input type="text" name="guess_the_word" /></p>
+          <button type="submit" id="submit_word_attempt">GO!</button>
+          <p id="word_attempt">{{ game["word_attempt"]}}</p>
+      </form>
+   <p>
+     <!-- One form/button per letter -->
+<form action="{{ url_for('guess') }}" method="post">
+  {% for letter in alphabet %}
+<button name="letter" value="{{ letter }}" {% if letter in game["used_letters"] %}disabled{% endif %}>
+    {{ letter }}
+</button>
+  {% endfor %}
+</form>
+
+   </p>
+
+    <canvas id="gallows" width="400" height="400" style="border:1px solid grey"></canvas>
+
+  {% endif %}
+<p id="lineLength" hidden>{{ game["line_length"] }}</p>
+
+    <script>
+      const lineLength = parseInt(
+    document.getElementById("lineLength").textContent,
+    10
+  );
+  function hasBit(n, mask) {
+    return (n & mask) !== 0;
+}
+      console.log("lineLength =", lineLength);
+
+  const c = document.getElementById("gallows");
+  const ctx = c.getContext("2d");
+
+  // Only draw this line if bit 0 (1) is set
+  if (hasBit(lineLength, 1)) {
+    ctx.beginPath();
+    ctx.moveTo(10, 90);
+    ctx.lineTo(10, 200);
+    ctx.stroke();
+  }
+
+  // Only draw this line if bit 1 (2) is set
+  if (hasBit(lineLength, 2)) {
+    ctx.beginPath();
+    ctx.moveTo(20, 20);
+    ctx.lineTo(20, 100);
+    ctx.stroke();
+  }
+
+  // Only draw this line if bit 2 (4) is set
+  
+  if (hasBit(lineLength, 3)) {
+    ctx.beginPath();
+    ctx.moveTo(20, 20);
+    ctx.lineTo(100, 20);
+    ctx.stroke();
+  }
+
+
+
+</script>
+
+
+  </body>
+</html>
